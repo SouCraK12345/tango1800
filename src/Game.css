@@ -1,0 +1,270 @@
+/* 右下の正解数/総問題数表示 */
+.corner-stats {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    display: flex;
+    align-items: flex-end;
+}
+
+.corner-correct {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #000000;
+    margin-right: 0.2em;
+    line-height: 1;
+}
+
+.corner-slash {
+    font-size: 1.2rem;
+    color: #888;
+    margin: 0 0.1em 0 0.1em;
+    line-height: 1.2;
+}
+
+.corner-total {
+    font-size: 1.1rem;
+    color: #888;
+    line-height: 1.2;
+}
+
+.back {
+    color: gray;
+    text-decoration: none;
+    font-size: 1em;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.Game {
+    width: 100%;
+    height: 100%;
+}
+
+.Ready {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.Playing {
+    display: none;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.answer {
+    font-size: 1em;
+    margin-top: 20px;
+    color: gray;
+}
+
+
+#canvas {
+    display: block;
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    height: 100vh;
+    z-index: -1;
+    opacity: 0.5;
+}
+
+#bar {
+    background-color: aquamarine;
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: 100vw;
+}
+
+.finish {
+    display: none;
+}
+
+.finish.show {
+    display: block;
+    animation: Finish 5s forwards;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Russo One', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 2rem;
+    text-align: center;
+    padding-top: 20px;
+    color: white;
+    background-color: rgb(76, 175, 80);
+    z-index: 5;
+}
+
+@keyframes Finish {
+    0% {
+        width: 0;
+        height: 60px;
+    }
+
+    10% {
+        width: 80vw;
+        height: 60px;
+    }
+
+    80% {
+        width: 100vw;
+        height: 60px;
+        color: white;
+        background-color: rgb(76, 175, 80);
+    }
+
+    100% {
+        width: 100vw;
+        height: calc(100vh - 20px);
+        color: black;
+        background-color: black;
+    }
+}
+
+.login {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+input {
+    padding: 10px;
+    margin: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.account {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.btb-count {
+    position: absolute;
+    top: -20px;
+    right: 0;
+    font-size: 4rem;
+    font-family: "Russo One";
+    color: #000000;
+}
+
+.matchmaking {
+    position: absolute;
+    background-color: white;
+    display: none;
+    height: 30px;
+    width: calc(100vw - 100vh / 10);
+    z-index: -2;
+    align-items: center;
+    justify-content: center;
+    left: 0;
+}
+
+.matchmaking.show {
+    display: flex;
+    animation: slideInFromBottom 0.5s forwards;
+}
+
+@keyframes slideInFromBottom {
+    0% {
+        bottom: -30px;
+    }
+
+    100% {
+        bottom: 0;
+    }
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Stick&display=swap');
+
+.loading.show {
+    animation: SlideInFromBottom2 0.5s ease-out forwards;
+    width: 100vw;
+    height: 100vh;
+    background-color: #222222;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading>h1 {
+    color: white;
+}
+
+.loading {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.l_players {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    max-height: 80vh;
+}
+
+.l_person {
+    display: flex;
+    background-color: #333333;
+    color: white;
+    width: 70vw;
+    height: 15vw;
+    border-radius: 7.5vw;
+    font-family: "Stick";
+    align-items: center;
+    padding-left: 10vw;
+    font-size: 5vw;
+    margin: 10px 0;
+}
+
+@keyframes SlideInFromBottom2 {
+    0% {
+        transform: translateY(100%);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.container {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -10000;
+    top: 0;
+    left: 0;
+}
+
+.ball {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #de4a4a;
+    top: 0px;
+    display: none;
+}
