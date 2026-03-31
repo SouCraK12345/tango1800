@@ -77,7 +77,9 @@ function StartGame() {
         intervalIds.push(id2);
     }
 
-    ws.onmessage = OnMessage;
+    if (ws) {
+        ws.onmessage = onMessage;
+    }
 
     document.querySelector(".Ready").style.display = "none";
     document.querySelector(".Playing").style.display = "flex";
@@ -289,7 +291,7 @@ function sendMessage(data) {
     }
 }
 
-function OnMessage(event) {
+function onMessage(event) {
     const data = JSON.parse(event.data);
     if (data.type === "joined") {
         joined_count = 2;
