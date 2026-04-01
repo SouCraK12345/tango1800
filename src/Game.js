@@ -124,7 +124,7 @@ function next_question() {
     } else {
         btb_count++;
     }
-    if (max_time > 500) {
+    if (max_time > 800) {
         max_time -= 100;
     }
     start_time = Date.now()
