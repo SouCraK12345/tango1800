@@ -4,6 +4,7 @@ import './Game.css';
 import './Loading.css';
 import { WebHaptics, defaultPatterns } from "https://cdn.skypack.dev/web-haptics";
 import { useEffect, useState } from "react";
+import { incrementWrongCount } from "./wrongCountStorage";
 
 const slideVariants = {
     initial: { x: "100%", opacity: 0 },
@@ -421,6 +422,7 @@ function MultiPlay() {
                     }
                     next_question();
                 } else {
+                    incrementWrongCount(question_list[q_num][0]);
                     button.style.backgroundColor = "lightgray";
                     button.style.boxShadow = "0 5px gray";
                     haptics.trigger(defaultPatterns.error);
