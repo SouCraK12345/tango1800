@@ -51,8 +51,8 @@ function MistakeStats() {
             transition={{ duration: 0.3 }}
             className="MistakeStats"
         >
-            <Link to="/mode" className="back">&lt; もどる</Link>
-            <h1 className="title">間違えた回数</h1>
+            <Link to="/mode" className="back" style={{ top: "10px", left: "20px", boxShadow: "0 0 20px 20px #ffffff", background: "white" }}>&lt; もどる</Link>
+            <h1 className="title">問題一覧を見る</h1>
             {error ? (
                 <p>{error}</p>
             ) : (
