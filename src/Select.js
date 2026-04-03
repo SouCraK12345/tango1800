@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import React from "react";
+import React, { useState } from "react";
 import './Select.css';
 
 const slideVariants = {
@@ -9,10 +9,10 @@ const slideVariants = {
     exit: { x: "-100%", opacity: 0 },
 };
 
-function SelectButton({ start, end }) {
+function SelectButton({ start, end, mode }) {
     const navigate = useNavigate();
     return (
-        <button className="SelectButton" onClick={() => navigate(`/game?mode=alone&start=${start}&end=${end}`)}>
+        <button className="SelectButton" onClick={() => navigate(`/game?mode=${mode}&start=${start}&end=${end}`)}>
             {start} ~ {end}
         </button>
     );
@@ -20,15 +20,30 @@ function SelectButton({ start, end }) {
 
 function Select() {
     const location = useLocation();
+    const navigate = useNavigate();
+    const [customStart, setCustomStart] = useState("");
+    const [customEnd, setCustomEnd] = useState("");
+
+    const params = new URLSearchParams(location.search);
+    const mode = params.get("mode") || "alone";
+
     // 1~1800まで100区切りでボタンを生成
     const buttons = [];
     for (let i = 0; i < 18; i++) {
         const start = i * 100 + 1;
         const end = (i + 1) * 100;
-        buttons.push(<SelectButton key={i} start={start} end={end} />);
+        buttons.push(<SelectButton key={i} start={start} end={end} mode={mode} />);
     }
 
-    const params = new URLSearchParams(location.search);
+    const handleCustomStart = () => {
+        const start = parseInt(customStart);
+        const end = parseInt(customEnd);
+        if (!isNaN(start) && !isNaN(end) && start > 0 && end >= start) {
+            navigate(`/game?mode=${mode}&start=${start}&end=${end}`);
+        } else {
+            alert("正しい範囲を入力してください");
+        }
+    };
 
     return (
         <motion.div
@@ -40,10 +55,29 @@ function Select() {
             className="Select">
             <Link to="/mode" className="back">&lt; もどる</Link>
             <h1>範囲を選択</h1>
-            <p>{params.get("mode") === "alone" ? "ひとりで" : "みんなで"}</p>
+            <p>{mode === "alone" ? "ひとりで" : "みんなで"}</p>
+
             <div className="buttonContainer">
                 {buttons}
+
+                <div className="customRange">
+                    <input
+                        type="number"
+                        placeholder="開始"
+                        value={customStart}
+                        onChange={(e) => setCustomStart(e.target.value)}
+                    />
+                    <span> ~ </span>
+                    <input
+                        type="number"
+                        placeholder="終了"
+                        value={customEnd}
+                        onChange={(e) => setCustomEnd(e.target.value)}
+                    />
+                    <button onClick={handleCustomStart} disabled={!customStart || !customEnd}>決定</button>
+                </div>
             </div>
+
         </motion.div>
     );
 }

@@ -26,4 +26,35 @@
     overflow-y: scroll;
     padding: 20px;
     background: #00000010;
+    margin-top: 20px;
+}
+
+.customRange {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.customRange input {
+    width: 80px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.customRange button {
+    padding: 8px 16px;
+    background-color: #0b7dda;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.customRange button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }

@@ -388,6 +388,9 @@ function Game() {
 
     useEffect(() => {
         setValue("");
+        q_num = 0;
+        btb_count = 0;
+        btb_total = 0; // BTB累計
         mode = params.get("mode");
         if (mode === "together") {
             start_num = 1;
