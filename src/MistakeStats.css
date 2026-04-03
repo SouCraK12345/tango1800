@@ -1,15 +1,40 @@
 .MistakeStats {
-    width: 100vw;
-    min-height: 100vh;
+    width: 100%;
+    max-width: 800px;
+    height: 100%;
     background: #f9fbff;
     padding: 20px;
     box-sizing: border-box;
     color: #222;
     overflow-y: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.back {
+    color: #555;
+    text-decoration: none;
+    font-size: 0.9rem;
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    z-index: 10;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.title {
+    font-size: 1.8rem;
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
 }
 
 .statsTableWrap {
-    margin-top: 16px;
+    flex: 1;
     width: 100%;
     overflow-x: auto;
     background: #fff;
@@ -20,6 +45,12 @@
 .statsTable {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
+}
+
+td {
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .statsTable th,
@@ -27,6 +58,7 @@
     text-align: left;
     padding: 10px 12px;
     border-bottom: 1px solid #eceff5;
+    white-space: nowrap;
 }
 
 .statsTable thead th {
@@ -34,4 +66,32 @@
     top: 0;
     background: #eef4ff;
     z-index: 1;
+}
+
+@media screen and (max-width: 600px) {
+    .MistakeStats {
+        padding: 10px;
+    }
+
+    .back {
+        top: 10px;
+        left: 10px;
+        font-size: 0.8rem;
+    }
+
+    .title {
+        font-size: 1.4rem;
+        margin-top: 35px;
+        margin-bottom: 15px;
+    }
+
+    .statsTable th,
+    .statsTable td {
+        padding: 8px 6px;
+        font-size: 13px;
+    }
+
+    .statsTableWrap {
+        border-radius: 8px;
+    }
 }

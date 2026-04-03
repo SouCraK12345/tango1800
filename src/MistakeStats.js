@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
-import { getWrongCounts } from "./wrongCountStorage";
+import { getCorrectCounts, getWrongCounts } from "./wrongCountStorage";
 import "./MistakeStats.css";
 
 const slideVariants = {
@@ -18,25 +18,36 @@ function MistakeStats() {
         fetch("/eitango.json")
             .then((res) => res.json())
             .then((data) => setWords(Array.isArray(data) ? data : []))
-            .catch(() => setError("問題データの読み込みに失敗しました。"));
+            .catch(() => setError("データの読み込みに失敗しました。"));
     }, []);
 
     const rows = useMemo(() => {
-        const counts = getWrongCounts();
+        const wrongCounts = getWrongCounts();
+        const correctCounts = getCorrectCounts();
         const mapped = words.map((item, index) => {
             const english = item[0];
             const japanese = item[1];
+            const wrongCount = wrongCounts[english] || 0;
+            const correctCount = correctCounts[english] || 0;
+            const totalCount = wrongCount + correctCount;
+            const accuracy = totalCount === 0 ? 0 : (correctCount / totalCount) * 100;
+
             return {
                 no: index + 1,
                 english,
                 japanese,
-                wrongCount: counts[english] || 0,
+                wrongCount,
+                correctCount,
+                accuracy,
             };
         });
 
         return mapped.sort((a, b) => {
             if (b.wrongCount !== a.wrongCount) {
                 return b.wrongCount - a.wrongCount;
+            }
+            if (b.correctCount !== a.correctCount) {
+                return b.correctCount - a.correctCount;
             }
             return a.no - b.no;
         });
@@ -51,8 +62,13 @@ function MistakeStats() {
             transition={{ duration: 0.3 }}
             className="MistakeStats"
         >
-            <Link to="/mode" className="back" style={{ top: "10px", left: "20px", boxShadow: "0 0 20px 20px #ffffff", background: "white" }}>&lt; もどる</Link>
-            <h1 className="title">問題一覧を見る</h1>
+            <Link
+                to="/mode"
+                className="back"
+            >
+                &lt; もどる
+            </Link>
+            <h1 className="title">ミス統計を見る</h1>
             {error ? (
                 <p>{error}</p>
             ) : (
@@ -60,19 +76,21 @@ function MistakeStats() {
                     <table className="statsTable">
                         <thead>
                             <tr>
-                                <th>No.</th>
                                 <th>English</th>
                                 <th>日本語</th>
-                                <th>間違えた回数</th>
+                                <th style={{width: "7%" }}>正解</th>
+                                <th style={{width: "7%" }}>ミス</th>
+                                <th>正解率</th>
                             </tr>
                         </thead>
                         <tbody>
                             {rows.map((row) => (
                                 <tr key={row.no}>
-                                    <td>{row.no}</td>
                                     <td>{row.english}</td>
                                     <td>{row.japanese}</td>
+                                    <td>{row.correctCount}</td>
                                     <td>{row.wrongCount}</td>
+                                    <td>{row.accuracy.toFixed(1)}%</td>
                                 </tr>
                             ))}
                         </tbody>
