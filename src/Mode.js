@@ -23,6 +23,7 @@ function Mode() {
             <h1 className="title">モード選択</h1>
             <button onClick={() => navigate("/select?mode=alone")}>ひとりで</button>
             <button onClick={() => navigate("/game?mode=together")}>みんなで</button>
+            <button onClick={() => navigate("/mistakes")}>問題一覧を見る</button>
         </motion.div>);
 }
 

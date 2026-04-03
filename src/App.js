@@ -6,6 +6,7 @@ import Mode from "./Mode";
 import Game from "./Game";
 import Result from "./Result";
 import Multiplay from "./Multiplay";
+import MistakeStats from "./MistakeStats";
 import './App.css';
 
 function AnimatedRoutes() {
@@ -21,6 +22,7 @@ function AnimatedRoutes() {
         <Route path="/game" element={<Game />} />
         <Route path="/result" element={<Result />} />
         <Route path="/multiplay" element={<Multiplay />} />
+        <Route path="/mistakes" element={<MistakeStats />} />
       </Routes>
     </AnimatePresence>
   );

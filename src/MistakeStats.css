@@ -1,0 +1,37 @@
+.MistakeStats {
+    width: 100vw;
+    min-height: 100vh;
+    background: #f9fbff;
+    padding: 20px;
+    box-sizing: border-box;
+    color: #222;
+    overflow-y: auto;
+}
+
+.statsTableWrap {
+    margin-top: 16px;
+    width: 100%;
+    overflow-x: auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.statsTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.statsTable th,
+.statsTable td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #eceff5;
+}
+
+.statsTable thead th {
+    position: sticky;
+    top: 0;
+    background: #eef4ff;
+    z-index: 1;
+}
