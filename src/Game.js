@@ -4,7 +4,7 @@ import './Game.css';
 import './Loading.css';
 import { WebHaptics, defaultPatterns } from "https://cdn.skypack.dev/web-haptics";
 import { useEffect, useState } from "react";
-import { incrementWrongCount } from "./wrongCountStorage";
+import { incrementCorrectCount, incrementWrongCount } from "./wrongCountStorage";
 
 const slideVariants = {
     initial: { x: "100%", opacity: 0 },
@@ -460,6 +460,7 @@ function Game() {
                 const selected_japanese = button.textContent;
                 const correct_japanese = question_list[q_num][1];
                 if (selected_japanese === correct_japanese) {
+                    incrementCorrectCount(question_list[q_num][0]);
                     correct_answers++;
                     document.querySelector(".answer").textContent = `${question_list[q_num][0]} = ${correct_japanese}`;
                     question_list.splice(q_num, 1);
