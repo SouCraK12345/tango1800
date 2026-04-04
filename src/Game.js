@@ -118,6 +118,7 @@ function next_question() {
     document.querySelector(".Japanese3").textContent = options[2];
     document.querySelector(".Japanese4").textContent = options[3];
     haptics.trigger(defaultPatterns.heavy);
+    currentQuestionHadMistake = false;
 
     if (Date.now() - start_time > max_time) {
         max_time = 1600;
@@ -155,6 +156,7 @@ let particles = [];
 let playingList = [];
 let startSoonReceived = false;
 let startGameReceived = false;
+let currentQuestionHadMistake = false;
 
 // ===== 割り込み追加 =====
 function addBlock(indexFromBottom) {
@@ -460,8 +462,10 @@ function Game() {
                 const selected_japanese = button.textContent;
                 const correct_japanese = question_list[q_num][1];
                 if (selected_japanese === correct_japanese) {
-                    incrementCorrectCount(question_list[q_num][0]);
-                    correct_answers++;
+                    if (!currentQuestionHadMistake) {
+                        incrementCorrectCount(question_list[q_num][0]);
+                        correct_answers++;
+                    }
                     document.querySelector(".answer").textContent = `${question_list[q_num][0]} = ${correct_japanese}`;
                     question_list.splice(q_num, 1);
                     document.querySelectorAll(".Japanese").forEach(button => {
@@ -475,6 +479,7 @@ function Game() {
                     }
                     next_question();
                 } else {
+                    currentQuestionHadMistake = true;
                     incrementWrongCount(question_list[q_num][0]);
                     button.style.backgroundColor = "lightgray";
                     button.style.boxShadow = "0 5px gray";
