@@ -158,6 +158,26 @@ let startSoonReceived = false;
 let startGameReceived = false;
 let currentQuestionHadMistake = false;
 
+function resetGameState() {
+    q_num = 0;
+    max_time = 1500;
+    start_time = Date.now();
+    question_list = [];
+    default_question_list = [];
+    number_of_questions = 0;
+    correct_answers = 0;
+    btb_count = 0;
+    btb_total = 0;
+    joined_count = 0;
+    joined_name = "";
+    beeped = false;
+    blocks = [];
+    particles = [];
+    playingList = [];
+    startSoonReceived = false;
+    startGameReceived = false;
+}
+
 // ===== 割り込み追加 =====
 function addBlock(indexFromBottom) {
     // 挿入
@@ -391,9 +411,7 @@ function Game() {
 
     useEffect(() => {
         setValue("");
-        q_num = 0;
-        btb_count = 0;
-        btb_total = 0; // BTB累計
+        resetGameState();
         mode = params.get("mode");
         if (mode === "together") {
             start_num = 1;
