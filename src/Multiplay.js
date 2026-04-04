@@ -114,8 +114,7 @@ const blockHeight = 20;
 let blocks = [];
 let particles = [];
 let playingList = [];
-let startSoonReceived = false;
-let startGameReceived = false;
+let finished = false;
 
 // ===== 割り込み追加 =====
 function addBlock(indexFromBottom) {
@@ -274,6 +273,11 @@ function onMessage(event) {
             number_of_questions += data.count;
         }
     }
+
+    if (data.type == "finished") {
+        finished = true;
+        document.querySelector(".finish-by").textContent = `by ${data.user_name}`;
+    }
 }
 
 const loginRequest = async (body) => {
@@ -419,6 +423,7 @@ function MultiPlay() {
                     breakBlock();
                     if (question_list.length === 0) {
                         document.querySelector(".finish").classList.add("show");
+                        sendMessage({ type: "finished", user_name: localStorage.getItem("user_name") });
                         return;
                     }
                     next_question();
@@ -443,6 +448,10 @@ function MultiPlay() {
                 }
             });
         });
+        if (finished) {
+            document.querySelector(".finish").classList.add("show");
+            return;
+        }
         document.querySelector(".finish").addEventListener("animationend", () => {
             navigate("/result", { state: { num_words: end_num - start_num + 1, total: number_of_questions } });
         });
@@ -498,7 +507,7 @@ function MultiPlay() {
             className="Game"
         >
             <div className="Playing">
-                <div className="finish">Finish!</div>
+                <div className="finish">Finish!<br /><span style="text-size: 1.2rem;" class="finish-by">{finished ? "Finished!" : ""}</span></div>
                 <h1 className="English"></h1>
                 <div className="ButtonContainer">
                     <button className="Japanese1 Japanese">日本語1</button>
