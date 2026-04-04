@@ -453,7 +453,7 @@ function MultiPlay() {
             return;
         }
         document.querySelector(".finish").addEventListener("animationend", () => {
-            navigate("/result", { state: { num_words: end_num - start_num + 1, total: number_of_questions } });
+            navigate("/result", { state: { num_words: end_num - start_num + 1, total: number_of_questions, btb_total } });
         });
         setTimeout(() => {
             StartGame();

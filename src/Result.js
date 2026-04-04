@@ -19,7 +19,8 @@ function Result() {
         resultHTML = (
             <div className="result">
                 総問題数: {data.total}<br />
-                単語数: {data.num_words}
+                単語数: {data.num_words}<br />
+                ポイント: {data.btb_total}
             </div>
         )
     }

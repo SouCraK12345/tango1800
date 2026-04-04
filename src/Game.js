@@ -498,7 +498,7 @@ function Game() {
             intervalIds = [];
             animationFrameIds.forEach(id => cancelAnimationFrame(id));
             animationFrameIds = [];
-            navigate("/result", { state: { num_words: end_num - start_num + 1, total: number_of_questions } });
+            navigate("/result", { state: { num_words: end_num - start_num + 1, total: number_of_questions, btb_total } });
         });
 
 
