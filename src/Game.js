@@ -94,6 +94,7 @@ function StartGame() {
         [question_list[i], question_list[j]] = [question_list[j], question_list[i]];
     }
     q_num = 0;
+    game_start_time = Date.now();
 
     update();
     next_question();
@@ -139,6 +140,8 @@ let bar_canvas;
 let b_ctx;
 let max_time = 1500;
 let start_time = Date.now();
+let game_start_time = Date.now();
+let elapsed_time = 0;
 let question_list = [];
 let default_question_list = [];
 let number_of_questions = 0;
@@ -162,6 +165,8 @@ function resetGameState() {
     q_num = 0;
     max_time = 1500;
     start_time = Date.now();
+    game_start_time = Date.now();
+    elapsed_time = 0;
     question_list = [];
     default_question_list = [];
     number_of_questions = 0;
@@ -277,6 +282,15 @@ function update() {
     if (btbElem) btbElem.textContent = btb_count;
     const btbTotalElem = document.querySelector('.btb-total');
     if (btbTotalElem) btbTotalElem.textContent = btb_total;
+
+    // ゲームプレイ時間の更新
+    elapsed_time = Math.floor((Date.now() - game_start_time) / 1000);
+    const timerElem = document.querySelector('.game-timer');
+    if (timerElem) {
+        const minutes = Math.floor(elapsed_time / 60);
+        const seconds = elapsed_time % 60;
+        timerElem.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
 
     b_ctx.clearRect(0, 0, 1000, 50);
     if (Date.now() - start_time > max_time) {
@@ -524,7 +538,7 @@ function Game() {
             intervalIds = [];
             animationFrameIds.forEach(id => cancelAnimationFrame(id));
             animationFrameIds = [];
-            navigate("/result", { state: { num_words: end_num - start_num + 1, total: number_of_questions, btb_total } });
+            navigate("/result", { state: { num_words: end_num - start_num + 1, total: number_of_questions, btb_total, elapsed_time } });
         });
 
 
@@ -592,6 +606,7 @@ function Game() {
                 </div>
             </div>
             <div className="Playing">
+                <div className="game-timer">0:00</div>
                 <div className="finish">Finish!</div>
                 <h1 className="English"></h1>
                 <div className="ButtonContainer">
