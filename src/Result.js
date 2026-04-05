@@ -16,8 +16,11 @@ function Result() {
     if (data == null) {
         resultHTML = <div className="result">データが見つかりませんでした。<br />これはおそらくアプリの問題ではなく、あなたが再読み込みしたからですね。もう一度最初からやり直しです。頑張ってください。</div>;
     } else {
+        const minutes = Math.floor(data.elapsed_time / 60);
+        const seconds = data.elapsed_time % 60;
         resultHTML = (
             <div className="result">
+                プレイ時間: {minutes}:{seconds < 10 ? '0' : ''}{seconds}<br />
                 総問題数: {data.total}<br />
                 単語数: {data.num_words}<br />
                 スコア: {data.btb_total}<br />
