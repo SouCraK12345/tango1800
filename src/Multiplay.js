@@ -244,12 +244,10 @@ function update() {
     if (btbTotalElem) btbTotalElem.textContent = btb_total;
 
     // ゲームプレイ時間の更新
-    elapsed_time = Math.floor((Date.now() - game_start_time) / 1000);
+    elapsed_time = (Date.now() - game_start_time) / 1000;
     const timerElem = document.querySelector('.game-timer');
     if (timerElem) {
-        const minutes = Math.floor(elapsed_time / 60);
-        const seconds = elapsed_time % 60;
-        timerElem.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        timerElem.textContent = elapsed_time.toFixed(2);
     }
 
     b_ctx.clearRect(0, 0, 1000, 50);

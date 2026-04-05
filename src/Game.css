@@ -261,12 +261,15 @@ input {
 
 .game-timer {
     position: absolute;
-    top: 40px;
-    left: 10px;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
     font-size: 1.5rem;
-    font-family: "Russo One", sans-serif;
-    color: #333;
-    z-index: -1;
+    font-family: "Courier New", monospace;
+    color: white;
+    background-color: black;
+    padding: 2px 15px;
+    border-radius: 0 0 10px 10px;
 }
 
 .ball {
