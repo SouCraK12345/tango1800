@@ -121,6 +121,7 @@ let playingList = [];
 let startSoonReceived = false;
 let startGameReceived = false;
 let currentQuestionHadMistake = false;
+let finish = false;
 
 function resetGameState() {
     q_num = 0;
@@ -141,6 +142,7 @@ function resetGameState() {
     startSoonReceived = false;
     startGameReceived = false;
     b_startTime = null;
+    finish = false;
 }
 
 // ===== 割り込み追加 =====
@@ -278,6 +280,9 @@ function update() {
         console.log(question_list.length);
         return
     }
+    if (finish) {
+        document.querySelector(".finish").classList.add("show");
+    }
     requestAnimationFrame(update);
 }
 
@@ -306,6 +311,11 @@ function onMessage(event) {
             flying_ball();
             number_of_questions += data.count;
         }
+    }
+
+    if (data.type === "finish") {
+        finish = true;
+        document.querySelector(".finishBy").textContext = data.user_name;
     }
 }
 
@@ -455,6 +465,7 @@ function MultiPlay() {
                     breakBlock();
                     if (question_list.length === 0) {
                         document.querySelector(".finish").classList.add("show");
+                        sendMessage({ type: "finish", user_name: localStorage.getItem("user_name") });
                         return;
                     }
                     next_question();
@@ -536,7 +547,7 @@ function MultiPlay() {
         >
             <div className="Playing">
                 <div className="game-timer">0:00</div>
-                <div className="finish">Finish!</div>
+                <div className="finish">Finish!<span className="finishBy" /></div>
                 <h1 className="English"></h1>
                 <div className="ButtonContainer">
                     <button className="Japanese1 Japanese">日本語1</button>
