@@ -54,19 +54,22 @@ function Select() {
     const getRangeAccuracy = (start, end) => {
         if (words.length === 0) return null;
         if (isNaN(start) || isNaN(end)) return null;
-        let totalCorrect = 0;
-        let totalWrong = 0;
+        let accuracySum = 0;
+        let wordCount = 0;
         const s = Math.max(1, start);
         const e = Math.min(words.length, end);
         for (let i = s - 1; i < e; i++) {
             if (!words[i]) continue;
             const word = words[i][0];
-            totalCorrect += stats.correctCounts[word] || 0;
-            totalWrong += stats.wrongCounts[word] || 0;
+            const correctCount = stats.correctCounts[word] || 0;
+            const wrongCount = stats.wrongCounts[word] || 0;
+            const totalCount = correctCount + wrongCount;
+            const wordAccuracy = totalCount === 0 ? 0 : correctCount / totalCount;
+            accuracySum += wordAccuracy;
+            wordCount += 1;
         }
-        const total = totalCorrect + totalWrong;
-        if (total === 0) return null;
-        return ((totalCorrect / total) * 100).toFixed(1);
+        if (wordCount === 0) return null;
+        return ((accuracySum / wordCount) * 100).toFixed(1);
     };
 
     // 1~1800まで100区切りでボタンを生成
