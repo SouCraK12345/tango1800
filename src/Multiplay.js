@@ -497,6 +497,10 @@ function MultiPlay() {
         });
         setTimeout(() => {
             StartGame();
+            setTimeout(() => {
+                document.querySelector(".finish").classList.add("show");
+                document.querySelector(".finishBy").innerHTML = "due to time running out"
+            }, 120000)
         }, 2000);
 
         ball = document.getElementById('ball');
