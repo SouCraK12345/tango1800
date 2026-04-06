@@ -9,3 +9,7 @@
 .wide {
     width: 80vw;
 }
+
+.result {
+    text-align: center;
+}
