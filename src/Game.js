@@ -3,8 +3,8 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import './Game.css';
 import './Loading.css';
 import { WebHaptics, defaultPatterns } from "https://cdn.skypack.dev/web-haptics";
-import { useEffect, useState } from "react";
-import { incrementCorrectCount, incrementWrongCount } from "./wrongCountStorage";
+import { useEffect } from "react";
+import { getCorrectCounts, getWrongCounts, incrementCorrectCount, incrementWrongCount } from "./wrongCountStorage";
 
 const slideVariants = {
     initial: { x: "100%", opacity: 0 },
@@ -17,10 +17,12 @@ const haptics = new WebHaptics();
 
 let mode;
 let q_num = 0;
-let start_num;
-let end_num;
+let start_num = 1;
+let end_num = 1800;
+let priority_mode;
 let eitango;
 let navigate;
+let selected_question_count = 0;
 
 // setInterval, requestAnimationFrameのID管理用
 let intervalIds = [];
@@ -84,10 +86,17 @@ function StartGame() {
 
     document.querySelector(".Ready").style.display = "none";
     document.querySelector(".Playing").style.display = "flex";
-    number_of_questions = end_num - start_num + 1;
-    // 該当範囲をコピー
-    question_list = eitango.slice(start_num - 1, end_num);
-    default_question_list = eitango.slice(start_num - 1, end_num);
+    const builtQuestionList = buildQuestionList();
+    if (builtQuestionList.length === 0) {
+        alert("出題できる問題がありません。条件を変えてください。");
+        document.querySelector(".Ready").style.display = "flex";
+        document.querySelector(".Playing").style.display = "none";
+        return;
+    }
+    number_of_questions = builtQuestionList.length;
+    selected_question_count = builtQuestionList.length;
+    question_list = builtQuestionList;
+    default_question_list = builtQuestionList.slice();
     // シャッフル
     for (let i = question_list.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -98,6 +107,48 @@ function StartGame() {
 
     update();
     next_question();
+}
+
+function buildQuestionList() {
+    if (!Array.isArray(eitango) || eitango.length === 0) return [];
+    if (priority_mode === "leastPlayed50") {
+        const correctCounts = getCorrectCounts();
+        const wrongCounts = getWrongCounts();
+        return eitango
+            .map((item, index) => {
+                const english = item[0];
+                const totalCount = (correctCounts[english] || 0) + (wrongCounts[english] || 0);
+                return { item, index, totalCount };
+            })
+            .sort((a, b) => {
+                if (a.totalCount !== b.totalCount) return a.totalCount - b.totalCount;
+                return a.index - b.index;
+            })
+            .slice(0, 50)
+            .map((entry) => entry.item);
+    }
+    if (priority_mode === "lowAccuracy50") {
+        const correctCounts = getCorrectCounts();
+        const wrongCounts = getWrongCounts();
+        return eitango
+            .map((item, index) => {
+                const english = item[0];
+                const correctCount = correctCounts[english] || 0;
+                const wrongCount = wrongCounts[english] || 0;
+                const totalCount = correctCount + wrongCount;
+                const accuracy = totalCount === 0 ? 0 : correctCount / totalCount;
+                return { item, index, totalCount, accuracy };
+            })
+            .filter((entry) => entry.totalCount > 0 && entry.accuracy > 0)
+            .sort((a, b) => {
+                if (a.accuracy !== b.accuracy) return a.accuracy - b.accuracy;
+                if (b.totalCount !== a.totalCount) return b.totalCount - a.totalCount;
+                return a.index - b.index;
+            })
+            .slice(0, 50)
+            .map((entry) => entry.item);
+    }
+    return eitango.slice(start_num - 1, end_num);
 }
 
 function next_question() {
@@ -181,6 +232,7 @@ function resetGameState() {
     playingList = [];
     startSoonReceived = false;
     startGameReceived = false;
+    selected_question_count = 0;
 }
 
 // ===== 割り込み追加 =====
@@ -413,7 +465,13 @@ function Game() {
     navigate = useNavigate();
     const location = useLocation();
     const params = new URLSearchParams(location.search);
-    const [value, setValue] = useState("");
+    const readyTitleText = params.get("mode") === "together"
+        ? "ランダム"
+        : (params.get("priority") === "leastPlayed50"
+            ? "プレイ回数が少ない順 50問"
+            : (params.get("priority") === "lowAccuracy50"
+                ? "正答率が低い順 50問 (0%除外)"
+                : `${parseInt(params.get("start")) || 1} ~ ${parseInt(params.get("end")) || 1800}`));
 
     function logout() {
         localStorage.removeItem("user_name");
@@ -422,9 +480,12 @@ function Game() {
     }
 
     useEffect(() => {
-        setValue("");
         resetGameState();
         mode = params.get("mode");
+        priority_mode = params.get("priority") || "";
+        start_num = parseInt(params.get("start")) || 1;
+        end_num = parseInt(params.get("end")) || 1800;
+
         if (mode === "together") {
             start_num = 1;
             end_num = 1800;
@@ -477,7 +538,7 @@ function Game() {
         canvas.height = 1000;
         ctx.translate(100, 0);
         // 初期化
-        const totalBlocks = end_num - start_num + 1;
+        const totalBlocks = priority_mode ? 50 : (end_num - start_num + 1);
         for (let i = 0; i < totalBlocks; i++) {
             blocks.push({
                 x: 0,
@@ -536,7 +597,7 @@ function Game() {
             intervalIds = [];
             animationFrameIds.forEach(id => cancelAnimationFrame(id));
             animationFrameIds = [];
-            navigate("/result", { state: { num_words: end_num - start_num + 1, total: number_of_questions, btb_total, elapsed_time } });
+            navigate("/result", { state: { num_words: selected_question_count, total: number_of_questions, btb_total, elapsed_time } });
         });
 
 
@@ -581,9 +642,6 @@ function Game() {
         };
     }, []);
 
-    start_num = parseInt(params.get("start"));
-    end_num = parseInt(params.get("end"));
-
     return (
         <motion.div
             variants={slideVariants}
@@ -595,7 +653,7 @@ function Game() {
         >
             <div className="Ready">
                 <Link to="/mode" className="back">&lt; もどる</Link>
-                <h1 className="title">範囲: {params.get("mode") === "alone" ? `${start_num} ~ ${end_num}` : "ランダム"}</h1>
+                <h1 className="title">範囲: {readyTitleText}</h1>
                 <p>{params.get("mode") === "alone" ? "ひとりで" : "みんなで"}</p>
                 <button onClick={() => StartGame()}>開始</button>
                 <div className="account">
