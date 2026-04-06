@@ -92,7 +92,8 @@
 }
 
 .finish.show {
-    display: block;
+    display: flex;
+    flex-direction: column;
     animation: Finish 5s forwards;
     position: absolute;
     top: 50%;
@@ -102,6 +103,7 @@
     font-size: 2rem;
     text-align: center;
     padding-top: 20px;
+    padding-bottom: 20px;
     color: white;
     background-color: rgb(76, 175, 80);
     z-index: 5;
@@ -131,6 +133,10 @@
         color: black;
         background-color: black;
     }
+}
+
+.finishBy{
+    font-size: 1rem;
 }
 
 .login {

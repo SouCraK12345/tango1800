@@ -282,6 +282,7 @@ function update() {
     }
     if (finish) {
         document.querySelector(".finish").classList.add("show");
+        return;
     }
     requestAnimationFrame(update);
 }
@@ -315,7 +316,7 @@ function onMessage(event) {
 
     if (data.type === "finish") {
         finish = true;
-        document.querySelector(".finishBy").textContext = data.user_name;
+        document.querySelector(".finishBy").innerHTML = "by " + data.user_name;
     }
 }
 
