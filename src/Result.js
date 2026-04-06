@@ -20,7 +20,7 @@ function Result() {
         const seconds = data.elapsed_time % 60;
         resultHTML = (
             <div className="result">
-                プレイ時間: {minutes}:{seconds < 10 ? '0' : ''}{seconds}<br />
+                プレイ時間: {minutes}:{seconds < 10 ? '0' : ''}{Math.floor(seconds * 10) / 10}<br />
                 総問題数: {data.total}<br />
                 単語数: {data.num_words}<br />
                 スコア: {data.btb_total}<br />
