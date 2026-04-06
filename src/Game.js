@@ -470,9 +470,9 @@ function Game() {
     const readyTitleText = params.get("mode") === "together"
         ? "ランダム"
         : (params.get("priority") === "leastPlayed50"
-            ? "プレイ回数が少ない順 50問"
+            ? "プレイ回数が少ない順"
             : (params.get("priority") === "lowAccuracy50"
-                ? "正答率が低い順 50問 (0%除外)"
+                ? "正答率が低い順"
                 : `${parseInt(params.get("start")) || 1} ~ ${parseInt(params.get("end")) || 1800}`));
 
     function logout() {
