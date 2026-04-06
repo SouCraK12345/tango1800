@@ -116,13 +116,13 @@ function Select() {
                             className="priorityModeButton"
                             onClick={() => navigatePriorityMode("leastPlayed50")}
                         >
-                            プレイ回数が少ない順で50問
+                            プレイ回数が少ない順
                         </button>
                         <button
                             className="priorityModeButton"
                             onClick={() => navigatePriorityMode("lowAccuracy50")}
                         >
-                            正答率が低い順で50問(0%除外)
+                            正答率が低い順
                         </button>
                     </div>
                 )}
