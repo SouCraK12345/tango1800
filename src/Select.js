@@ -91,6 +91,10 @@ function Select() {
         }
     };
 
+    const navigatePriorityMode = (priorityMode) => {
+        navigate(`/game?mode=${mode}&priority=${priorityMode}`);
+    };
+
     const customAccuracy = getRangeAccuracy(parseInt(customStart), parseInt(customEnd));
 
     return (
@@ -106,6 +110,22 @@ function Select() {
             <p>{mode === "alone" ? "ひとりで" : "みんなで"}</p>
 
             <div className="buttonContainer">
+                {mode === "alone" && (
+                    <div className="priorityModes">
+                        <button
+                            className="priorityModeButton"
+                            onClick={() => navigatePriorityMode("leastPlayed50")}
+                        >
+                            プレイ回数が少ない順
+                        </button>
+                        <button
+                            className="priorityModeButton"
+                            onClick={() => navigatePriorityMode("lowAccuracy50")}
+                        >
+                            正答率が低い順
+                        </button>
+                    </div>
+                )}
                 {buttons}
 
                 <div className="customRange">

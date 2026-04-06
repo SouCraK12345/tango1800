@@ -56,6 +56,17 @@
     border-radius: 10px;
 }
 
+.priorityModes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.priorityModeButton {
+    width: 100%;
+}
+
 
 .customRange {
     display: flex;
