@@ -23,6 +23,9 @@ function Result() {
                 プレイ時間: {minutes}:{seconds < 10 ? '0' : ''}{Math.floor(seconds * 10) / 10}<br />
                 総問題数: {data.total}<br />
                 単語数: {data.num_words}<br />
+                正解数: {data.correct_count ?? 0}<br />
+                不正解数: {data.wrong_count ?? 0}<br />
+                解いた問題の数: {data.solved_count ?? data.total}<br />
                 スコア: {data.btb_total}<br />
             </div>
         )
