@@ -197,6 +197,7 @@ let question_list = [];
 let default_question_list = [];
 let number_of_questions = 0;
 let correct_answers = 0;
+let wrong_answers = 0;
 let ws;
 let btb_count = 0;
 let btb_total = 0; // BTB累計
@@ -222,6 +223,7 @@ function resetGameState() {
     default_question_list = [];
     number_of_questions = 0;
     correct_answers = 0;
+    wrong_answers = 0;
     btb_count = 0;
     btb_total = 0;
     joined_count = 0;
@@ -572,6 +574,7 @@ function Game() {
                 } else {
                     currentQuestionHadMistake = true;
                     incrementWrongCount(question_list[q_num][0]);
+                    wrong_answers++;
                     button.style.backgroundColor = "lightgray";
                     button.style.boxShadow = "0 5px gray";
                     haptics.trigger(defaultPatterns.error);
@@ -597,7 +600,17 @@ function Game() {
             intervalIds = [];
             animationFrameIds.forEach(id => cancelAnimationFrame(id));
             animationFrameIds = [];
-            navigate("/result", { state: { num_words: selected_question_count, total: number_of_questions, btb_total, elapsed_time } });
+            navigate("/result", {
+                state: {
+                    num_words: end_num - start_num + 1,
+                    total: number_of_questions,
+                    btb_total,
+                    elapsed_time,
+                    correct_count: correct_answers,
+                    wrong_count: wrong_answers,
+                    solved_count: correct_answers + wrong_answers
+                }
+            });
         });
 
 
