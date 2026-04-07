@@ -20,6 +20,9 @@ let start_num;
 let end_num;
 let eitango;
 let navigate;
+let ranking = [];
+let intervalIds = [];
+let animationFrameIds = [];
 
 // ダイアログをふわっと閉じる関数
 function closeDialogWithFade() {
@@ -43,7 +46,8 @@ function sendPlaying() {
 function StartGame() {
 
     sendPlaying();
-    setInterval(sendPlaying, 5000);
+    const intervalId = setInterval(sendPlaying, 5000);
+    intervalIds.push(intervalId);
     ws.onmessage = onMessage;
 
     document.querySelector(".Playing").style.display = "flex";
@@ -145,6 +149,9 @@ function resetGameState() {
     startGameReceived = false;
     b_startTime = null;
     finish = false;
+    ranking = [];
+    intervalIds = [];
+    animationFrameIds = [];
 }
 
 // ===== 割り込み追加 =====
@@ -284,9 +291,11 @@ function update() {
     }
     if (finish) {
         document.querySelector(".finish").classList.add("show");
+        sendMessage({ type: "finish", user_name: localStorage.getItem("user_name"), score: number_of_questions - (correct_answers + wrong_answers) });
         return;
     }
-    requestAnimationFrame(update);
+    const animationFrameId = requestAnimationFrame(update);
+    animationFrameIds.push(animationFrameId);
 }
 
 function sendMessage(data) {
@@ -318,7 +327,10 @@ function onMessage(event) {
 
     if (data.type === "finish") {
         finish = true;
-        document.querySelector(".finishBy").innerHTML = "by " + data.user_name;
+        if (ranking.length == 0) {
+            document.querySelector(".finishBy").innerHTML = "by " + data.user_name;
+        }
+        ranking.push(data)
     }
 }
 
@@ -399,7 +411,8 @@ function flying_ball(time) {
 
     ball.style.transform = `translate(calc(${x}vw - 50px), calc(100vh - 250px + ${y}px))`;
 
-    requestAnimationFrame(flying_ball);
+    const animationFrameId = requestAnimationFrame(flying_ball);
+    animationFrameIds.push(animationFrameId);
 }
 
 function MultiPlay() {
@@ -468,7 +481,7 @@ function MultiPlay() {
                     breakBlock();
                     if (question_list.length === 0) {
                         document.querySelector(".finish").classList.add("show");
-                        sendMessage({ type: "finish", user_name: localStorage.getItem("user_name") });
+                        sendMessage({ type: "finish", user_name: localStorage.getItem("user_name"), score: number_of_questions - (correct_answers + wrong_answers) });
                         return;
                     }
                     next_question();
@@ -496,6 +509,10 @@ function MultiPlay() {
             });
         });
         document.querySelector(".finish").addEventListener("animationend", () => {
+            intervalIds.forEach(id => clearInterval(id));
+            intervalIds = [];
+            animationFrameIds.forEach(id => cancelAnimationFrame(id));
+            animationFrameIds = [];
             navigate("/result", {
                 state: {
                     num_words: end_num - start_num + 1,
@@ -504,7 +521,8 @@ function MultiPlay() {
                     elapsed_time,
                     correct_count: correct_answers,
                     wrong_count: wrong_answers,
-                    solved_count: correct_answers + wrong_answers
+                    solved_count: correct_answers + wrong_answers,
+                    ranking
                 }
             });
         });
@@ -512,7 +530,8 @@ function MultiPlay() {
             StartGame();
             setTimeout(() => {
                 document.querySelector(".finish").classList.add("show");
-                document.querySelector(".finishBy").innerHTML = "due to time running out"
+                document.querySelector(".finishBy").innerHTML = "due to time running out";
+                sendMessage({ type: "finish", user_name: localStorage.getItem("user_name"), score: number_of_questions - (correct_answers + wrong_answers) });
             }, 120000)
         }, 2000);
 
