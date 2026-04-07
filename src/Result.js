@@ -60,7 +60,9 @@ function Result() {
         )
     }
     useEffect(() => {
-        showRanking(data.ranking)
+        if (Object.keys(data).includes("ranking")) {
+            showRanking(data.ranking)
+        }
     })
     return (
         <motion.div
