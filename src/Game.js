@@ -151,8 +151,20 @@ function buildQuestionList() {
     return eitango.slice(start_num - 1, end_num);
 }
 
+
+function speakQuestionWord(word) {
+    if (!word || typeof window === "undefined" || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(word);
+    utterance.lang = "en-US";
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    window.speechSynthesis.speak(utterance);
+}
+
 function next_question() {
     document.querySelector(".English").textContent = question_list[q_num][0];
+    speakQuestionWord(question_list[q_num][0]);
     const correct_japanese = question_list[q_num][1];
     const options = [correct_japanese];
     while (options.length < 4) {
