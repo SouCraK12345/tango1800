@@ -1,3 +1,6 @@
+# 英単語1800
+高校生が作った、英単語を効率よく覚えるためのマルチプレイのゲームです。
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
