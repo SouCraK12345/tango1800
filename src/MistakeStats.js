@@ -43,11 +43,17 @@ function MistakeStats() {
         });
 
         return mapped.sort((a, b) => {
+            const aHasAnswered = a.correctCount + a.wrongCount > 0;
+            const bHasAnswered = b.correctCount + b.wrongCount > 0;
+
+            if (aHasAnswered !== bHasAnswered) {
+                return aHasAnswered ? -1 : 1;
+            }
+            if (a.accuracy !== b.accuracy) {
+                return a.accuracy - b.accuracy;
+            }
             if (b.wrongCount !== a.wrongCount) {
                 return b.wrongCount - a.wrongCount;
-            }
-            if (b.correctCount !== a.correctCount) {
-                return b.correctCount - a.correctCount;
             }
             return a.no - b.no;
         });
