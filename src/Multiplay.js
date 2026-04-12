@@ -259,7 +259,7 @@ function update() {
     // 右下の正解数/総問題数も毎フレーム更新
     const correctElem = document.querySelector('.corner-correct');
     const totalElem = document.querySelector('.corner-total');
-    if (correctElem) correctElem.textContent = correct_answers;
+    if (correctElem) correctElem.textContent = number_of_questions - blocks.length;
     if (totalElem) totalElem.textContent = number_of_questions;
     const btbElem = document.querySelector('.btb-count');
     if (btbElem) btbElem.textContent = btb_count;
