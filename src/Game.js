@@ -20,6 +20,7 @@ let q_num = 0;
 let start_num = 1;
 let end_num = 1800;
 let priority_mode;
+let dataset = "eitango";
 let eitango;
 let navigate;
 let selected_question_count = 0;
@@ -479,13 +480,14 @@ function Game() {
     navigate = useNavigate();
     const location = useLocation();
     const params = new URLSearchParams(location.search);
+    const datasetLabel = params.get("dataset") === "sokutan" ? "速単" : "英単語";
     const readyTitleText = params.get("mode") === "together"
-        ? "ランダム"
+        ? `${datasetLabel} / ランダム`
         : (params.get("priority") === "leastPlayed50"
-            ? "プレイ回数が少ない順"
+            ? `${datasetLabel} / プレイ回数が少ない順`
             : (params.get("priority") === "lowAccuracy50"
-                ? "正答率が低い順"
-                : `${parseInt(params.get("start")) || 1} ~ ${parseInt(params.get("end")) || 1800}`));
+                ? `${datasetLabel} / 正答率が低い順`
+                : `${datasetLabel} / ${parseInt(params.get("start")) || 1} ~ ${parseInt(params.get("end")) || 1800}`));
 
     function logout() {
         localStorage.removeItem("user_name");
@@ -497,10 +499,12 @@ function Game() {
         resetGameState();
         mode = params.get("mode");
         priority_mode = params.get("priority") || "";
+        dataset = params.get("dataset") === "sokutan" ? "sokutan" : "eitango";
         start_num = parseInt(params.get("start")) || 1;
         end_num = parseInt(params.get("end")) || 1800;
 
         if (mode === "together") {
+            dataset = "eitango";
             start_num = 1;
             end_num = 1800;
             document.querySelector(".dialog").showModal();
@@ -532,13 +536,16 @@ function Game() {
             }
         }
 
-        fetch('/eitango.json')
+        fetch(dataset === "sokutan" ? "/sokutan.json" : "/eitango.json")
             .then(res => res.json())
             .then(data => {
                 eitango = data;
                 console.log(eitango);
+                if (end_num > eitango.length) {
+                    end_num = eitango.length;
+                }
             })
-            .catch(err => console.error('eitango.jsonの読み込みに失敗しました', err));
+            .catch(err => console.error(`${dataset}.jsonの読み込みに失敗しました`, err));
 
         bar_canvas = document.getElementById("bar");
         b_ctx = bar_canvas.getContext("2d");

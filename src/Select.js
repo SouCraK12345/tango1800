@@ -10,10 +10,10 @@ const slideVariants = {
     exit: { x: "-100%", opacity: 0 },
 };
 
-function SelectButton({ start, end, mode, accuracy }) {
+function SelectButton({ start, end, mode, dataset, accuracy }) {
     const navigate = useNavigate();
     return (
-        <button className="SelectButton" onClick={() => navigate(`/game?mode=${mode}&start=${start}&end=${end}`)}>
+        <button className="SelectButton" onClick={() => navigate(`/game?mode=${mode}&dataset=${dataset}&start=${start}&end=${end}`)}>
             <div className="rangeText">{start} ~ {end}</div>
             {accuracy !== null && <div className="accuracy">{accuracy}%</div>}
         </button>
@@ -25,14 +25,15 @@ function Select() {
     const navigate = useNavigate();
     const [customStart, setCustomStart] = useState(localStorage.getItem("customStart") || "");
     const [customEnd, setCustomEnd] = useState(localStorage.getItem("customEnd") || "");
+    const [dataset, setDataset] = useState(localStorage.getItem("dataset") || "eitango");
     const [words, setWords] = useState([]);
 
     useEffect(() => {
-        fetch("/eitango.json")
+        fetch(dataset === "sokutan" ? "/sokutan.json" : "/eitango.json")
             .then(res => res.json())
             .then(data => setWords(data))
             .catch(err => console.error(err));
-    }, []);
+    }, [dataset]);
 
     useEffect(() => {
         localStorage.setItem("customStart", customStart);
@@ -41,6 +42,10 @@ function Select() {
     useEffect(() => {
         localStorage.setItem("customEnd", customEnd);
     }, [customEnd]);
+
+    useEffect(() => {
+        localStorage.setItem("dataset", dataset);
+    }, [dataset]);
 
     const params = new URLSearchParams(location.search);
     const mode = params.get("mode") || "alone";
@@ -72,27 +77,28 @@ function Select() {
         return ((accuracySum / wordCount) * 100).toFixed(1);
     };
 
-    // 1~1800まで100区切りでボタンを生成
+    // データ数に応じて100区切りでボタンを生成
     const buttons = [];
-    for (let i = 0; i < 18; i++) {
+    const totalRanges = Math.ceil(words.length / 100);
+    for (let i = 0; i < totalRanges; i++) {
         const start = i * 100 + 1;
-        const end = (i + 1) * 100;
+        const end = Math.min((i + 1) * 100, words.length);
         const accuracy = getRangeAccuracy(start, end);
-        buttons.push(<SelectButton key={i} start={start} end={end} mode={mode} accuracy={accuracy} />);
+        buttons.push(<SelectButton key={i} start={start} end={end} mode={mode} dataset={dataset} accuracy={accuracy} />);
     }
 
     const handleCustomStart = () => {
         const start = parseInt(customStart);
         const end = parseInt(customEnd);
-        if (!isNaN(start) && !isNaN(end) && start > 0 && end >= start) {
-            navigate(`/game?mode=${mode}&start=${start}&end=${end}`);
+        if (!isNaN(start) && !isNaN(end) && start > 0 && end >= start && end <= words.length) {
+            navigate(`/game?mode=${mode}&dataset=${dataset}&start=${start}&end=${end}`);
         } else {
             alert("正しい範囲を入力してください");
         }
     };
 
     const navigatePriorityMode = (priorityMode) => {
-        navigate(`/game?mode=${mode}&priority=${priorityMode}`);
+        navigate(`/game?mode=${mode}&dataset=${dataset}&priority=${priorityMode}`);
     };
 
     const customAccuracy = getRangeAccuracy(parseInt(customStart), parseInt(customEnd));
@@ -108,6 +114,22 @@ function Select() {
             <Link to="/mode" className="back">&lt; もどる</Link>
             <h1>範囲を選択</h1>
             <p>{mode === "alone" ? "ひとりで" : "みんなで"}</p>
+            <div className="priorityModes">
+                <button
+                    className="priorityModeButton"
+                    onClick={() => setDataset("eitango")}
+                    style={{ opacity: dataset === "eitango" ? 1 : 0.6 }}
+                >
+                    英単語
+                </button>
+                <button
+                    className="priorityModeButton"
+                    onClick={() => setDataset("sokutan")}
+                    style={{ opacity: dataset === "sokutan" ? 1 : 0.6 }}
+                >
+                    速単
+                </button>
+            </div>
 
             <div className="buttonContainer">
                 {mode === "alone" && (
