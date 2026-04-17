@@ -23,6 +23,7 @@ let priority_mode;
 let eitango;
 let navigate;
 let selected_question_count = 0;
+let isDictMode = false;
 
 // setInterval, requestAnimationFrameのID管理用
 let intervalIds = [];
@@ -111,6 +112,9 @@ function StartGame() {
 
 function buildQuestionList() {
     if (!Array.isArray(eitango) || eitango.length === 0) return [];
+    if (isDictMode) {
+        return eitango.slice(start_num - 1, end_num);
+    }
     if (priority_mode === "leastPlayed50") {
         const correctCounts = getCorrectCounts();
         const wrongCounts = getWrongCounts();
@@ -496,6 +500,7 @@ function Game() {
     useEffect(() => {
         resetGameState();
         mode = params.get("mode");
+        isDictMode = params.get("dict") === "1";
         priority_mode = params.get("priority") || "";
         start_num = parseInt(params.get("start")) || 1;
         end_num = parseInt(params.get("end")) || 1800;
@@ -568,7 +573,9 @@ function Game() {
                 const correct_japanese = question_list[q_num][1];
                 if (selected_japanese === correct_japanese) {
                     if (!currentQuestionHadMistake) {
-                        incrementCorrectCount(question_list[q_num][0]);
+                        if (!isDictMode) {
+                            incrementCorrectCount(question_list[q_num][0]);
+                        }
                         correct_answers++;
                     }
                     document.querySelector(".answer").textContent = `${question_list[q_num][0]} = ${correct_japanese}`;
@@ -585,7 +592,9 @@ function Game() {
                     next_question();
                 } else {
                     currentQuestionHadMistake = true;
-                    incrementWrongCount(question_list[q_num][0]);
+                    if (!isDictMode) {
+                        incrementWrongCount(question_list[q_num][0]);
+                    }
                     wrong_answers++;
                     button.style.backgroundColor = "lightgray";
                     button.style.boxShadow = "0 5px gray";
