@@ -21,6 +21,10 @@ function Mode() {
         >
             <Link to="/" className="back">&lt; もどる</Link>
             <h1 className="title">モード選択</h1>
+            <div class="schedule">
+                <span>現在のスケジュール(<span class="date">15:00 ~ 17:00</span>)</span>
+                <div class="range">東進英単語1800 1~50</div>
+            </div>
             <button onClick={() => navigate("/select?mode=alone")}>ひとりで</button>
             <button onClick={() => navigate("/game?mode=together")}>みんなで</button>
             <button onClick={() => navigate("/mistakes")}>問題一覧を見る</button>
