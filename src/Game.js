@@ -16,6 +16,7 @@ const haptics = new WebHaptics();
 
 
 let mode;
+let dict;
 let q_num = 0;
 let start_num = 1;
 let end_num = 1800;
@@ -496,6 +497,7 @@ function Game() {
     useEffect(() => {
         resetGameState();
         mode = params.get("mode");
+        dict = params.get("dict") || "eitango";
         priority_mode = params.get("priority") || "";
         start_num = parseInt(params.get("start")) || 1;
         end_num = parseInt(params.get("end")) || 1800;
@@ -532,13 +534,13 @@ function Game() {
             }
         }
 
-        fetch('/eitango.json')
+        fetch(`/${dict}.json`)
             .then(res => res.json())
             .then(data => {
                 eitango = data;
                 console.log(eitango);
             })
-            .catch(err => console.error('eitango.jsonの読み込みに失敗しました', err));
+            .catch(err => console.error(`${dict}.jsonの読み込みに失敗しました`, err));
 
         bar_canvas = document.getElementById("bar");
         b_ctx = bar_canvas.getContext("2d");

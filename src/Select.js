@@ -10,10 +10,11 @@ const slideVariants = {
     exit: { x: "-100%", opacity: 0 },
 };
 
-function SelectButton({ start, end, mode, accuracy }) {
+function SelectButton({ start, end, mode, dict, accuracy }) {
     const navigate = useNavigate();
+    const buildGamePath = () => `/game?dict=${dict}&mode=${mode}&start=${start}&end=${end}`;
     return (
-        <button className="SelectButton" onClick={() => navigate(`/game?mode=${mode}&start=${start}&end=${end}`)}>
+        <button className="SelectButton" onClick={() => navigate(buildGamePath())}>
             <div className="rangeText">{start} ~ {end}</div>
             {accuracy !== null && <div className="accuracy">{accuracy}%</div>}
         </button>
@@ -44,6 +45,7 @@ function Select() {
 
     const params = new URLSearchParams(location.search);
     const mode = params.get("mode") || "alone";
+    const dict = params.get("dict") || "eitango";
 
     const stats = useMemo(() => {
         const correctCounts = getCorrectCounts();
@@ -78,21 +80,21 @@ function Select() {
         const start = i * 100 + 1;
         const end = (i + 1) * 100;
         const accuracy = getRangeAccuracy(start, end);
-        buttons.push(<SelectButton key={i} start={start} end={end} mode={mode} accuracy={accuracy} />);
+        buttons.push(<SelectButton key={i} start={start} end={end} mode={mode} dict={dict} accuracy={accuracy} />);
     }
 
     const handleCustomStart = () => {
         const start = parseInt(customStart);
         const end = parseInt(customEnd);
         if (!isNaN(start) && !isNaN(end) && start > 0 && end >= start) {
-            navigate(`/game?mode=${mode}&start=${start}&end=${end}`);
+            navigate(`/game?dict=${dict}&mode=${mode}&start=${start}&end=${end}`);
         } else {
             alert("正しい範囲を入力してください");
         }
     };
 
     const navigatePriorityMode = (priorityMode) => {
-        navigate(`/game?mode=${mode}&priority=${priorityMode}`);
+        navigate(`/game?dict=${dict}&mode=${mode}&priority=${priorityMode}`);
     };
 
     const customAccuracy = getRangeAccuracy(parseInt(customStart), parseInt(customEnd));

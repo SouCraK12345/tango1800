@@ -10,6 +10,7 @@ const slideVariants = {
 
 function Mode() {
     const navigate = useNavigate();
+    const dict = "eitango";
     return (
         <motion.div
             variants={slideVariants}
@@ -25,8 +26,8 @@ function Mode() {
                 <span>現在のスケジュール(<span class="date">15:00 ~ 17:00</span>)</span>
                 <div class="range">東進英単語1800 1~50</div>
             </div>
-            <button onClick={() => navigate("/select?mode=alone")}>ひとりで</button>
-            <button onClick={() => navigate("/game?mode=together")}>みんなで</button>
+            <button onClick={() => navigate(`/select?dict=${dict}&mode=alone`)}>ひとりで</button>
+            <button onClick={() => navigate(`/game?dict=${dict}&mode=together`)}>みんなで</button>
             <button onClick={() => navigate("/mistakes")}>問題一覧を見る</button>
         </motion.div>);
 }
