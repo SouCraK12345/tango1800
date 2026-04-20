@@ -10,10 +10,10 @@ const slideVariants = {
     exit: { x: "-100%", opacity: 0 },
 };
 
-function SelectButton({ start, end, mode, accuracy }) {
+function SelectButton({ start, end, mode, accuracy, tab }) {
     const navigate = useNavigate();
     return (
-        <button className="SelectButton" onClick={() => navigate(`/game?mode=${mode}&start=${start}&end=${end}`)}>
+        <button className="SelectButton" onClick={() => navigate(`/game?mode=${mode}&start=${start}&end=${end}&dict=${tab}`)}>
             <div className="rangeText">{start} ~ {end}</div>
             {accuracy !== null && <div className="accuracy">{accuracy}%</div>}
         </button>
@@ -26,6 +26,8 @@ function Select() {
     const [customStart, setCustomStart] = useState(localStorage.getItem("customStart") || "");
     const [customEnd, setCustomEnd] = useState(localStorage.getItem("customEnd") || "");
     const [words, setWords] = useState([]);
+
+    const [tab, setTab] = useState(0);
 
     useEffect(() => {
         fetch("/eitango.json")
@@ -78,21 +80,28 @@ function Select() {
         const start = i * 100 + 1;
         const end = (i + 1) * 100;
         const accuracy = getRangeAccuracy(start, end);
-        buttons.push(<SelectButton key={i} start={start} end={end} mode={mode} accuracy={accuracy} />);
+        buttons.push(<SelectButton key={i} start={start} end={end} mode={mode} accuracy={accuracy} tab={0} />);
     }
 
-    const handleCustomStart = () => {
+    const buttons2 = [];
+    for (let i = 0; i < 19; i++) {
+        const start = i * 100 + 1;
+        const end = (i + 1) * 100;
+        buttons2.push(<SelectButton key={i} start={start} end={end} mode={mode} tab={1} />);
+    }
+
+    const handleCustomStart = (tab) => {
         const start = parseInt(customStart);
         const end = parseInt(customEnd);
         if (!isNaN(start) && !isNaN(end) && start > 0 && end >= start) {
-            navigate(`/game?mode=${mode}&start=${start}&end=${end}`);
+            navigate(`/game?mode=${mode}&start=${start}&end=${end}&dict=${tab}`);
         } else {
             alert("正しい範囲を入力してください");
         }
     };
 
-    const navigatePriorityMode = (priorityMode) => {
-        navigate(`/game?mode=${mode}&priority=${priorityMode}`);
+    const navigatePriorityMode = (priorityMode, tab) => {
+        navigate(`/game?mode=${mode}&priority=${priorityMode}&tab=${tab}`);
     };
 
     const customAccuracy = getRangeAccuracy(parseInt(customStart), parseInt(customEnd));
@@ -109,43 +118,89 @@ function Select() {
             <h1>範囲を選択</h1>
             <p>{mode === "alone" ? "ひとりで" : "みんなで"}</p>
 
-            <div className="buttonContainer">
-                {mode === "alone" && (
-                    <div className="priorityModes">
-                        <button
-                            className="priorityModeButton"
-                            onClick={() => navigatePriorityMode("leastPlayed50")}
-                        >
-                            プレイ回数が少ない順
-                        </button>
-                        <button
-                            className="priorityModeButton"
-                            onClick={() => navigatePriorityMode("lowAccuracy50")}
-                        >
-                            正答率が低い順
-                        </button>
-                    </div>
-                )}
-                {buttons}
 
-                <div className="customRange">
-                    <input
-                        type="number"
-                        placeholder="開始"
-                        value={customStart}
-                        onChange={(e) => setCustomStart(e.target.value)}
-                    />
-                    <span> ~ </span>
-                    <input
-                        type="number"
-                        placeholder="終了"
-                        value={customEnd}
-                        onChange={(e) => setCustomEnd(e.target.value)}
-                    />
-                    <button onClick={handleCustomStart} disabled={!customStart || !customEnd}>
-                        決定
-                        {customAccuracy !== null && <span className="customAccuracyText"> ({customAccuracy}%)</span>}
-                    </button>
+            <div className="tabs">
+                <button onClick={() => setTab(0)}>東進 英単語1800</button>
+                <button onClick={() => setTab(1)}>速読英単語1903</button>
+            </div>
+            <div className="slider">
+                <div className="buttonContainer">
+                    <div className="slide" style={{ transform: `translateX(-${tab * 106}%)` }}>
+                        {mode === "alone" && (
+                            <div className="priorityModes">
+                                <button
+                                    className="priorityModeButton"
+                                    onClick={() => navigatePriorityMode("leastPlayed50", 0)}
+                                >
+                                    プレイ回数が少ない順
+                                </button>
+                                <button
+                                    className="priorityModeButton"
+                                    onClick={() => navigatePriorityMode("lowAccuracy50", 0)}
+                                >
+                                    正答率が低い順
+                                </button>
+                            </div>
+                        )}
+                        {buttons}
+                        <div className="customRange">
+                            <input
+                                type="number"
+                                placeholder="開始"
+                                value={customStart}
+                                onChange={(e) => setCustomStart(e.target.value)}
+                            />
+                            <span> ~ </span>
+                            <input
+                                type="number"
+                                placeholder="終了"
+                                value={customEnd}
+                                onChange={(e) => setCustomEnd(e.target.value)}
+                            />
+                            <button onClick={() => handleCustomStart(0)} disabled={!customStart || !customEnd}>
+                                決定
+                                {customAccuracy !== null && <span className="customAccuracyText"> ({customAccuracy}%)</span>}
+                            </button>
+                        </div>
+                    </div>
+                    <div className="slide accuracy_hidden" style={{ transform: `translateX(-${tab * 106}%)` }}>
+                        {/* {mode === "alone" && (
+                            <div className="priorityModes">
+                                <button
+                                    className="priorityModeButton"
+                                    onClick={() => navigatePriorityMode("leastPlayed50")}
+                                >
+                                    プレイ回数が少ない順
+                                </button>
+                                <button
+                                    className="priorityModeButton"
+                                    onClick={() => navigatePriorityMode("lowAccuracy50")}
+                                >
+                                    正答率が低い順
+                                </button>
+                            </div>
+                        )} */}
+                        {buttons2}
+                        <div className="customRange">
+                            <input
+                                type="number"
+                                placeholder="開始"
+                                value={customStart}
+                                onChange={(e) => setCustomStart(e.target.value)}
+                            />
+                            <span> ~ </span>
+                            <input
+                                type="number"
+                                placeholder="終了"
+                                value={customEnd}
+                                onChange={(e) => setCustomEnd(e.target.value)}
+                            />
+                            <button onClick={() => handleCustomStart(1)} disabled={!customStart || !customEnd}>
+                                決定
+                                {customAccuracy !== null && <span className="customAccuracyText"> ({customAccuracy}%)</span>}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 

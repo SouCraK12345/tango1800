@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import './Game.css';
 import './Loading.css';
 import { WebHaptics, defaultPatterns } from "https://cdn.skypack.dev/web-haptics";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { getCorrectCounts, getWrongCounts, incrementCorrectCount, incrementWrongCount } from "./wrongCountStorage";
 
 const slideVariants = {
@@ -16,6 +16,7 @@ const haptics = new WebHaptics();
 
 
 let mode;
+let dict;
 let q_num = 0;
 let start_num = 1;
 let end_num = 1800;
@@ -477,6 +478,7 @@ function login() {
 
 function Game() {
     navigate = useNavigate();
+    const [dict_name, setDictName] = useState(0);
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const readyTitleText = params.get("mode") === "together"
@@ -497,6 +499,7 @@ function Game() {
         resetGameState();
         mode = params.get("mode");
         priority_mode = params.get("priority") || "";
+        dict = params.get("dict") || "";
         start_num = parseInt(params.get("start")) || 1;
         end_num = parseInt(params.get("end")) || 1800;
 
@@ -531,14 +534,17 @@ function Game() {
                 });
             }
         }
-
-        fetch('/eitango.json')
+        const json_file = ["/eitango.json", "/sokutan.json"]
+        fetch(json_file[dict])
             .then(res => res.json())
             .then(data => {
                 eitango = data;
                 console.log(eitango);
             })
             .catch(err => console.error('eitango.jsonの読み込みに失敗しました', err));
+
+        const dict_names = ["東進英単語 1800", "速読英単語 1903"];
+        setDictName(dict_names[dict])
 
         bar_canvas = document.getElementById("bar");
         b_ctx = bar_canvas.getContext("2d");
@@ -679,6 +685,7 @@ function Game() {
             <div className="Ready">
                 <Link to="/mode" className="back">&lt; もどる</Link>
                 <h1 className="title">範囲: {readyTitleText}</h1>
+                <p>({dict_name})</p>
                 <p>{params.get("mode") === "alone" ? "ひとりで" : "みんなで"}</p>
                 <button onClick={() => StartGame()}>開始</button>
                 <div className="account">
