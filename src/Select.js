@@ -30,7 +30,7 @@ function Select() {
     const [tab, setTab] = useState(0);
 
     useEffect(() => {
-        fetch("/eitango.json")
+        fetch(`${process.env.PUBLIC_URL}/eitango.json`)
             .then(res => res.json())
             .then(data => setWords(data))
             .catch(err => console.error(err));

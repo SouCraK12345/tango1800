@@ -276,7 +276,7 @@ function addBlock(indexFromBottom) {
 function breakBlock() {
 
     // break.mp3を再生
-    const audio = new Audio('/break.mp3');
+    const audio = new Audio(`${process.env.PUBLIC_URL}/break.mp3`);
     audio.play();
 
     if (blocks.length === 0) return;
@@ -364,7 +364,7 @@ function update() {
     b_ctx.clearRect(0, 0, 1000, 50);
     if (Date.now() - start_time > max_time) {
         if (!beeped) {
-            const audio = new Audio('/beep.mp3');
+            const audio = new Audio(`${process.env.PUBLIC_URL}/beep.mp3`);
             audio.play();
             // 失敗時、カウント中のbtb_countを累計に加算
             btb_total += btb_count;
@@ -539,7 +539,7 @@ function Game() {
                 });
             }
         }
-        const json_file = ["/eitango.json", "/sokutan.json"]
+        const json_file = [`${process.env.PUBLIC_URL}/eitango.json`, `${process.env.PUBLIC_URL}/sokutan.json`]
         fetch(json_file[dict])
             .then(res => res.json())
             .then(data => {
@@ -615,7 +615,7 @@ function Game() {
                         addBlock(randomNum);
                         question_list.splice(randomNum, 0, question_list[q_num]);
                     }
-                    const audio = new Audio('/wrong.mp3');
+                    const audio = new Audio(`${process.env.PUBLIC_URL}/wrong.mp3`);
                     audio.play();
                     number_of_questions += 2;
                 }

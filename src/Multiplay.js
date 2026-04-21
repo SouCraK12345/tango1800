@@ -188,7 +188,7 @@ function addBlock(indexFromBottom) {
 function breakBlock() {
 
     // break.mp3を再生
-    const audio = new Audio('/break.mp3');
+    const audio = new Audio(`${process.env.PUBLIC_URL}/break.mp3`);
     audio.play();
 
     if (blocks.length === 0) return;
@@ -278,7 +278,7 @@ function update() {
         if (!beeped) {
             let enemy = playingList.filter(i => i !== localStorage.getItem("user_name"))[Math.floor(Math.random() * (playingList.length - 1))];
             sendMessage({ type: "btb", count: btb_count, user_name: localStorage.getItem("user_name"), enemy });
-            const audio = new Audio('/beep.mp3');
+            const audio = new Audio(`${process.env.PUBLIC_URL}/beep.mp3`);
             audio.play().catch(e => { /* 失敗しても無視 */ });
             // 失敗時、カウント中のbtb_countを累計に加算
             btb_total += btb_count;
@@ -325,7 +325,7 @@ function onMessage(event) {
     if (data.type === "btb") {
         if (data.enemy === localStorage.getItem("user_name") && data.count > 0) {
             setTimeout(() => {
-                const audio = new Audio('/damage.mp3');
+                const audio = new Audio(`${process.env.PUBLIC_URL}/damage.mp3`);
                 audio.play().catch(e => { /* 失敗しても無視 */ });
             }, 1200);
             for (var i = 0; i < data.count; i++) {
@@ -445,7 +445,7 @@ function MultiPlay() {
 
         ws = new WebSocket("wss://eitango-server.souki110212.workers.dev");
 
-        fetch('/eitango.json')
+        fetch(`${process.env.PUBLIC_URL}/eitango.json`)
             .then(res => res.json())
             .then(data => {
                 eitango = data;
@@ -514,7 +514,7 @@ function MultiPlay() {
                         addBlock(randomNum);
                         question_list.splice(randomNum, 0, question_list[q_num]);
                     }
-                    const audio = new Audio('/wrong.mp3');
+                    const audio = new Audio(`${process.env.PUBLIC_URL}/wrong.mp3`);
                     audio.play();
                     number_of_questions += 2;
                 }
