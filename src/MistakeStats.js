@@ -15,7 +15,7 @@ function MistakeStats() {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        fetch("/eitango.json")
+        fetch(`${process.env.PUBLIC_URL}/eitango.json`)
             .then((res) => res.json())
             .then((data) => setWords(Array.isArray(data) ? data : []))
             .catch(() => setError("データの読み込みに失敗しました。"));
