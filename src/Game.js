@@ -649,7 +649,7 @@ function Game() {
                 let pressTimer = null;
                 btbElem.addEventListener('mousedown', () => {
                     pressTimer = setTimeout(() => {
-                        window.location.href = '/';
+                        window.location.href = '/tango1800/';
                     }, 1200); // 1.2秒長押しで遷移
                 });
                 btbElem.addEventListener('mouseup', () => {
@@ -661,7 +661,7 @@ function Game() {
                 // スマホ対応
                 btbElem.addEventListener('touchstart', () => {
                     pressTimer = setTimeout(() => {
-                        window.location.href = '/';
+                        window.location.href = '/tango1800/';
                     }, 1200);
                 });
                 btbElem.addEventListener('touchend', () => {
