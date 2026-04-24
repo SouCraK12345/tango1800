@@ -509,6 +509,11 @@ function Game() {
         end_num = parseInt(params.get("end")) || 1800;
 
         if (mode === "together") {
+            if (!navigator.onLine) {
+                alert("オフライン中は『みんなで』モードを利用できません");
+                navigate("/mode");
+                return;
+            }
             start_num = 1;
             end_num = 1800;
             document.querySelector(".dialog").showModal();
