@@ -101,7 +101,7 @@ function Select() {
     };
 
     const navigatePriorityMode = (priorityMode, tab) => {
-        navigate(`/game?mode=${mode}&priority=${priorityMode}&tab=${tab}`);
+        navigate(`/game?mode=${mode}&priority=${priorityMode}&dict=${tab}`);
     };
 
     const customAccuracy = getRangeAccuracy(parseInt(customStart), parseInt(customEnd));
