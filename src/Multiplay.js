@@ -431,6 +431,7 @@ function MultiPlay() {
     navigate = useNavigate();
     const location = useLocation();
     const params = new URLSearchParams(location.search);
+    const dict = params.get("dict") || "0";
     const [value, setValue] = useState("");
 
     function logout() {
@@ -481,7 +482,7 @@ function MultiPlay() {
                 const correct_japanese = question_list[q_num][1];
                 if (selected_japanese === correct_japanese) {
                     if (!currentQuestionHadMistake) {
-                        incrementCorrectCount(question_list[q_num][0]);
+                        incrementCorrectCount(question_list[q_num][0], dict);
                         correct_answers++;
                     }
                     document.querySelector(".answer").textContent = `${question_list[q_num][0]} = ${correct_japanese}`;
@@ -499,7 +500,7 @@ function MultiPlay() {
                     next_question();
                 } else {
                     currentQuestionHadMistake = true;
-                    incrementWrongCount(question_list[q_num][0]);
+                    incrementWrongCount(question_list[q_num][0], dict);
                     wrong_answers++;
                     button.style.backgroundColor = "lightgray";
                     button.style.boxShadow = "0 5px gray";
