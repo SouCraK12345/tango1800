@@ -30,11 +30,12 @@ function Select() {
     const [tab, setTab] = useState(0);
 
     useEffect(() => {
-        fetch(`${process.env.PUBLIC_URL}/eitango.json`)
+        const jsonFile = tab === 0 ? "eitango.json" : "sokutan.json";
+        fetch(`${process.env.PUBLIC_URL}/${jsonFile}`)
             .then(res => res.json())
             .then(data => setWords(data))
             .catch(err => console.error(err));
-    }, []);
+    }, [tab]);
 
     useEffect(() => {
         localStorage.setItem("customStart", customStart);
@@ -48,10 +49,10 @@ function Select() {
     const mode = params.get("mode") || "alone";
 
     const stats = useMemo(() => {
-        const correctCounts = getCorrectCounts();
-        const wrongCounts = getWrongCounts();
+        const correctCounts = getCorrectCounts(tab);
+        const wrongCounts = getWrongCounts(tab);
         return { correctCounts, wrongCounts };
-    }, []);
+    }, [tab]);
 
     const getRangeAccuracy = (start, end) => {
         if (words.length === 0) return null;
@@ -74,21 +75,26 @@ function Select() {
         return ((accuracySum / wordCount) * 100).toFixed(1);
     };
 
-    // 1~1800まで100区切りでボタンを生成
-    const buttons = [];
-    for (let i = 0; i < 18; i++) {
-        const start = i * 100 + 1;
-        const end = (i + 1) * 100;
-        const accuracy = getRangeAccuracy(start, end);
-        buttons.push(<SelectButton key={i} start={start} end={end} mode={mode} accuracy={accuracy} tab={0} />);
-    }
-
-    const buttons2 = [];
-    for (let i = 0; i < 19; i++) {
-        const start = i * 100 + 1;
-        const end = (i + 1) * 100;
-        buttons2.push(<SelectButton key={i} start={start} end={end} mode={mode} tab={1} />);
-    }
+    const createRangeButtons = (targetTab) => {
+        const buttonCount = Math.ceil(words.length / 100);
+        const rangeButtons = [];
+        for (let i = 0; i < buttonCount; i++) {
+            const start = i * 100 + 1;
+            const end = Math.min((i + 1) * 100, words.length);
+            const accuracy = getRangeAccuracy(start, end);
+            rangeButtons.push(
+                <SelectButton
+                    key={`${targetTab}-${i}`}
+                    start={start}
+                    end={end}
+                    mode={mode}
+                    accuracy={accuracy}
+                    tab={targetTab}
+                />
+            );
+        }
+        return rangeButtons;
+    };
 
     const handleCustomStart = (tab) => {
         const start = parseInt(customStart);
@@ -126,7 +132,7 @@ function Select() {
             <div className="slider">
                 <div className="buttonContainer">
                     <div className="slide" style={{ transform: `translateX(-${tab * 106}%)` }}>
-                        {mode === "alone" && (
+                        {mode === "alone" && tab === 0 && (
                             <div className="priorityModes">
                                 <button
                                     className="priorityModeButton"
@@ -142,7 +148,7 @@ function Select() {
                                 </button>
                             </div>
                         )}
-                        {buttons}
+                        {createRangeButtons(0)}
                         <div className="customRange">
                             <input
                                 type="number"
@@ -163,24 +169,24 @@ function Select() {
                             </button>
                         </div>
                     </div>
-                    <div className="slide accuracy_hidden" style={{ transform: `translateX(-${tab * 106}%)` }}>
-                        {/* {mode === "alone" && (
+                    <div className="slide" style={{ transform: `translateX(-${tab * 106}%)` }}>
+                        {mode === "alone" && tab === 1 && (
                             <div className="priorityModes">
                                 <button
                                     className="priorityModeButton"
-                                    onClick={() => navigatePriorityMode("leastPlayed50")}
+                                    onClick={() => navigatePriorityMode("leastPlayed50", 1)}
                                 >
                                     プレイ回数が少ない順
                                 </button>
                                 <button
                                     className="priorityModeButton"
-                                    onClick={() => navigatePriorityMode("lowAccuracy50")}
+                                    onClick={() => navigatePriorityMode("lowAccuracy50", 1)}
                                 >
                                     正答率が低い順
                                 </button>
                             </div>
-                        )} */}
-                        {buttons2}
+                        )}
+                        {createRangeButtons(1)}
                         <div className="customRange">
                             <input
                                 type="number"
