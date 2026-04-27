@@ -117,8 +117,8 @@ function buildQuestionList() {
         return eitango.slice(start_num - 1, end_num);
     }
     if (priority_mode === "leastPlayed50") {
-        const correctCounts = getCorrectCounts();
-        const wrongCounts = getWrongCounts();
+        const correctCounts = getCorrectCounts(dict);
+        const wrongCounts = getWrongCounts(dict);
         return eitango
             .map((item, index) => {
                 const english = item[0];
@@ -133,8 +133,8 @@ function buildQuestionList() {
             .map((entry) => entry.item);
     }
     if (priority_mode === "lowAccuracy50") {
-        const correctCounts = getCorrectCounts();
-        const wrongCounts = getWrongCounts();
+        const correctCounts = getCorrectCounts(dict);
+        const wrongCounts = getWrongCounts(dict);
         return eitango
             .map((item, index) => {
                 const english = item[0];
@@ -417,7 +417,7 @@ function onMessage(event) {
             document.querySelector(".l_end").innerHTML = data.end_num;
             playingList.forEach(name => addPersonIntoLoading(name));
             setTimeout(() => {
-                navigate("/multiplay?&start=" + data.start_num + "&end=" + data.end_num);
+                navigate("/multiplay?&start=" + data.start_num + "&end=" + data.end_num + "&dict=" + dict);
                 ws.close();
             }, 5000);
         }
@@ -584,9 +584,7 @@ function Game() {
                 const correct_japanese = question_list[q_num][1];
                 if (selected_japanese === correct_japanese) {
                     if (!currentQuestionHadMistake) {
-                        if (!isDictMode) {
-                            incrementCorrectCount(question_list[q_num][0]);
-                        }
+                        incrementCorrectCount(question_list[q_num][0], dict);
                         correct_answers++;
                     }
                     document.querySelector(".answer").textContent = `${question_list[q_num][0]} = ${correct_japanese}`;
@@ -603,9 +601,7 @@ function Game() {
                     next_question();
                 } else {
                     currentQuestionHadMistake = true;
-                    if (!isDictMode) {
-                        incrementWrongCount(question_list[q_num][0]);
-                    }
+                    incrementWrongCount(question_list[q_num][0], dict);
                     wrong_answers++;
                     button.style.backgroundColor = "lightgray";
                     button.style.boxShadow = "0 5px gray";
