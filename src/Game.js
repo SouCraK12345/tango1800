@@ -24,7 +24,6 @@ let priority_mode;
 let eitango;
 let navigate;
 let selected_question_count = 0;
-let isDictMode = false;
 
 // setInterval, requestAnimationFrameのID管理用
 let intervalIds = [];
@@ -99,6 +98,7 @@ function StartGame() {
     selected_question_count = builtQuestionList.length;
     question_list = builtQuestionList;
     default_question_list = builtQuestionList.slice();
+    initializeBlocks(builtQuestionList.length);
     // シャッフル
     for (let i = question_list.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -113,9 +113,6 @@ function StartGame() {
 
 function buildQuestionList() {
     if (!Array.isArray(eitango) || eitango.length === 0) return [];
-    if (isDictMode) {
-        return eitango.slice(start_num - 1, end_num);
-    }
     if (priority_mode === "leastPlayed50") {
         const correctCounts = getCorrectCounts(dict);
         const wrongCounts = getWrongCounts(dict);
@@ -154,6 +151,18 @@ function buildQuestionList() {
             .map((entry) => entry.item);
     }
     return eitango.slice(start_num - 1, end_num);
+}
+
+function initializeBlocks(totalBlocks) {
+    blocks = [];
+    for (let i = 0; i < totalBlocks; i++) {
+        blocks.push({
+            x: 0,
+            y: canvas.height - blockHeight * (i + 1),
+            vy: 0,
+            color: "#4CAF50"
+        });
+    }
 }
 
 
@@ -502,7 +511,6 @@ function Game() {
     useEffect(() => {
         resetGameState();
         mode = params.get("mode");
-        isDictMode = params.get("dict") === "1";
         priority_mode = params.get("priority") || "";
         dict = params.get("dict") || "";
         start_num = parseInt(params.get("start")) || 1;
@@ -567,16 +575,6 @@ function Game() {
         canvas.width = 200;
         canvas.height = 1000;
         ctx.translate(100, 0);
-        // 初期化
-        const totalBlocks = priority_mode ? 50 : (end_num - start_num + 1);
-        for (let i = 0; i < totalBlocks; i++) {
-            blocks.push({
-                x: 0,
-                y: canvas.height - blockHeight * (i + 1),
-                vy: 0,
-                color: "#4CAF50"
-            });
-        }
 
         document.querySelectorAll(".Japanese").forEach(button => {
             button.addEventListener("click", () => {
