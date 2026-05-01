@@ -4,6 +4,7 @@
 ![Gemini様による説明画像](tango1800-description.png "Gemini様による説明画像")
 (Gemini様による説明画像です)
 
+(以下、Reactのビルド方法の説明です)
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
