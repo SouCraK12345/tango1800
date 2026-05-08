@@ -12,6 +12,7 @@ const slideVariants = {
 function Mode() {
     const navigate = useNavigate();
     const [isOnline, setIsOnline] = useState(navigator.onLine);
+    const [online_range, setOnlineRange] = useState("インターネットに接続しています...");
 
     useEffect(() => {
         const handleOnline = () => setIsOnline(true);
@@ -24,6 +25,16 @@ function Mode() {
             window.removeEventListener("online", handleOnline);
             window.removeEventListener("offline", handleOffline);
         };
+    }, []);
+
+    useEffect(() => {
+        const getRangeFunc = async () => {
+            const response = await fetch("https://eitango-server.souki110212.workers.dev/schedule");
+            const data = await response.json();
+            setOnlineRange(
+                ["東進英単語 1800", "速読英単語 1903"][data.dict] + data.start + " ~ " + data.end
+            );
+        }
     }, []);
 
     return (
@@ -48,7 +59,7 @@ function Mode() {
             <button onClick={() => navigate("/mistakes")}>問題一覧を見る</button>
             <div class="schedule">
                 <span>現在のスケジュール(<span class="date">15:00 ~ 17:00</span>)</span>
-                <div class="range">現在開発中</div>
+                <div class="range">{online_range}</div>
             </div>
         </motion.div>);
 }
