@@ -35,6 +35,8 @@ function Mode() {
                 ["東進英単語 1800", "速読英単語 1903"][data.dict] + data.start + " ~ " + data.end
             );
         }
+        
+        getRangeFunc();
     }, []);
 
     return (
