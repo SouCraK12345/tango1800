@@ -31,6 +31,7 @@ function Mode() {
         const getRangeFunc = async () => {
             const response = await fetch("https://eitango-server.souki110212.workers.dev/schedule");
             const data = await response.json();
+            console.log(data);
             setOnlineRange(
                 ["東進英単語 1800", "速読英単語 1903"][data.dict] + data.start + " ~ " + data.end
             );
