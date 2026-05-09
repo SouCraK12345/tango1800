@@ -29,14 +29,36 @@ function Mode() {
 
     useEffect(() => {
         const getRangeFunc = async () => {
-            const response = await fetch("https://eitango-server.souki110212.workers.dev/schedule");
-            const data = await response.json();
-            console.log(data);
-            setOnlineRange(
-                ["東進英単語 1800", "速読英単語 1903"][data.dict] + data.start + " ~ " + data.end
-            );
-        }
-        
+            try {
+                const response = await fetch(
+                    "https://eitango-server.souki110212.workers.dev/schedule"
+                );
+    
+                if (!response.ok) {
+                    throw new Error("Fetch failed");
+                }
+    
+                const data = await response.json();
+    
+                console.log(data);
+    
+                // dict を number に変換
+                const dictIndex = Number(data.dict);
+    
+                const dictName = [
+                    "東進英単語 1800",
+                    "速読英単語 1903"
+                ][dictIndex];
+    
+                setOnlineRange(
+                    `${dictName} ${data.start} ~ ${data.end}`
+                );
+    
+            } catch (err) {
+                console.error("Error:", err);
+            }
+        };
+    
         getRangeFunc();
     }, []);
 
