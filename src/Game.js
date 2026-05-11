@@ -5,6 +5,7 @@ import './Loading.css';
 import { WebHaptics, defaultPatterns } from "https://cdn.skypack.dev/web-haptics";
 import { useState, useEffect } from "react";
 import { getCorrectCounts, getWrongCounts, incrementCorrectCount, incrementWrongCount } from "./wrongCountStorage";
+import { getVolumeLevel } from "./settingsStorage";
 
 const slideVariants = {
     initial: { x: "100%", opacity: 0 },
@@ -173,6 +174,7 @@ function speakQuestionWord(word) {
     utterance.lang = "en-US";
     utterance.rate = 0.9;
     utterance.pitch = 1;
+    utterance.volume = getVolumeLevel();
     window.speechSynthesis.speak(utterance);
 }
 
@@ -286,6 +288,7 @@ function breakBlock() {
 
     // break.mp3を再生
     const audio = new Audio(`${process.env.PUBLIC_URL}/break.mp3`);
+    audio.volume = getVolumeLevel();
     audio.play();
 
     if (blocks.length === 0) return;
@@ -374,6 +377,7 @@ function update() {
     if (Date.now() - start_time > max_time) {
         if (!beeped) {
             const audio = new Audio(`${process.env.PUBLIC_URL}/beep.mp3`);
+            audio.volume = getVolumeLevel();
             audio.play();
             // 失敗時、カウント中のbtb_countを累計に加算
             btb_total += btb_count;
@@ -615,6 +619,7 @@ function Game() {
                         question_list.splice(randomNum, 0, question_list[q_num]);
                     }
                     const audio = new Audio(`${process.env.PUBLIC_URL}/wrong.mp3`);
+                    audio.volume = getVolumeLevel();
                     audio.play();
                     number_of_questions += 2;
                 }

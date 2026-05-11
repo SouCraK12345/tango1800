@@ -20,6 +20,13 @@ function Home() {
             className="Home"
             onClick={() => navigate("/mode")}
             >
+            <Link
+                to="/settings"
+                className="settingsButton material-icons"
+                onClick={(e) => e.stopPropagation()}
+            >
+                settings
+            </Link>
             <h1 className="title">英単語1800</h1>
             Tap To Start
         </motion.div>);
