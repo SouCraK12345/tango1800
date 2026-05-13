@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import './Home.css';
 
 const slideVariants = {
@@ -10,6 +11,9 @@ const slideVariants = {
 
 function Home() {
     const navigate = useNavigate();
+    useEffect(()=>{
+        document.querySelector(".settingsButton").style.display = "block";
+    }, [])
     return (
         <motion.div
             variants={slideVariants}
@@ -18,12 +22,18 @@ function Home() {
             exit="exit"
             transition={{ duration: 0.3 }}
             className="Home"
-            onClick={() => navigate("/mode")}
+            onClick={() => {
+                document.querySelector(".settingsButton").style.display = "none";
+                navigate("/mode")
+            }}
             >
             <Link
                 to="/settings"
                 className="settingsButton material-icons"
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                    document.querySelector(".settingsButton").style.display = "none";
+                    e.stopPropagation()
+                }}
             >
                 settings
             </Link>

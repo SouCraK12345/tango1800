@@ -13,8 +13,68 @@
 
 #volume-range {
   width: min(360px, 80vw);
+  padding: 0;
 }
 
 .backButton {
   margin-top: 12px;
+}
+
+/* 1. デフォルトのスタイルをリセット */
+input[type="range"] {
+  -webkit-appearance: none; /* Chrome, Safari, Edge用 */
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+}
+
+/* 2. 溝（Track）のスタイル */
+/* WebKit系 (Chrome, Safari, Edge) */
+input[type="range"]::-webkit-slider-runnable-track {
+  background: #e0e0e0;
+  border-radius: 10px;
+  height: 8px;
+}
+
+/* Firefox */
+input[type="range"]::-moz-range-track {
+  background: #e0e0e0;
+  border-radius: 10px;
+  height: 8px;
+}
+
+/* 3. つまみ（Thumb）のスタイル */
+/* WebKit系 (Chrome, Safari, Edge) */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* デフォルトを解除 */
+  appearance: none;
+  margin-top: -6px; /* 溝の高さに合わせて位置を調整 (溝8px, つまみ20pxの場合) */
+  background-color: #4a90e2;
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+}
+
+/* Firefox */
+input[type="range"]::-moz-range-thumb {
+  background-color: #4a90e2;
+  border: none; /* Firefoxのデフォルト枠線を消す */
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+}
+
+/* 4. ホバー・アクティブ時の演出 */
+input[type="range"]:hover::-webkit-slider-thumb {
+  transform: scale(1.15);
+  background-color: #357abd;
+}
+
+input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(0.95);
 }

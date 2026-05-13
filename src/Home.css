@@ -5,6 +5,8 @@
   align-items: center;
   justify-content: center;
   gap: 30vh;
+  width: 100vw;
+  height: 100vh;
 }
 
 .settingsButton {
