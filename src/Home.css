@@ -1,7 +1,18 @@
 .Home{
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 30vh;
+}
+
+.settingsButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: inherit;
+  text-decoration: none;
+  font-size: 32px;
+  z-index: 2;
 }
