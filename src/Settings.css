@@ -78,3 +78,9 @@ input[type="range"]:hover::-webkit-slider-thumb {
 input[type="range"]:active::-webkit-slider-thumb {
   transform: scale(0.95);
 }
+.toggleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+}

@@ -5,7 +5,7 @@ import './Loading.css';
 import { WebHaptics, defaultPatterns } from "https://cdn.skypack.dev/web-haptics";
 import { useEffect, useState } from "react";
 import { incrementCorrectCount, incrementWrongCount } from "./wrongCountStorage";
-import { getVolumeLevel } from "./settingsStorage";
+import { getHapticsEnabled, getVolumeLevel } from "./settingsStorage";
 
 const slideVariants = {
     initial: { x: "100%", opacity: 0 },
@@ -99,7 +99,9 @@ function next_question() {
     document.querySelector(".Japanese2").textContent = options[1];
     document.querySelector(".Japanese3").textContent = options[2];
     document.querySelector(".Japanese4").textContent = options[3];
-    haptics.trigger(defaultPatterns.heavy);
+    if (getHapticsEnabled()) {
+        haptics.trigger(defaultPatterns.heavy);
+    }
     currentQuestionHadMistake = false;
 
     if (Date.now() - start_time > max_time) {
@@ -509,7 +511,9 @@ function MultiPlay() {
                     wrong_answers++;
                     button.style.backgroundColor = "lightgray";
                     button.style.boxShadow = "0 5px gray";
-                    haptics.trigger(defaultPatterns.error);
+                    if (getHapticsEnabled()) {
+                        haptics.trigger(defaultPatterns.error);
+                    }
                     for (var i = 0; i < 2; i++) {
                         let randomNum;
                         if (i === 0) {

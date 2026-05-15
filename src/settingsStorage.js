@@ -13,3 +13,16 @@ export function setVolumeLevel(volume) {
   const normalized = Math.min(1, Math.max(0, Number(volume)));
   localStorage.setItem(VOLUME_STORAGE_KEY, String(normalized));
 }
+
+const HAPTICS_STORAGE_KEY = "haptics_enabled_v1";
+const DEFAULT_HAPTICS_ENABLED = true;
+
+export function getHapticsEnabled() {
+  const stored = localStorage.getItem(HAPTICS_STORAGE_KEY);
+  if (stored === null) return DEFAULT_HAPTICS_ENABLED;
+  return stored === "true";
+}
+
+export function setHapticsEnabled(enabled) {
+  localStorage.setItem(HAPTICS_STORAGE_KEY, String(Boolean(enabled)));
+}
