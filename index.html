@@ -6,14 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        body{
+        body {
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
             overflow: hidden;
         }
-        .main-container{
+
+        .main-container {
             border-radius: 20px;
             background-color: #f5f7fb;
             display: flex;
@@ -31,6 +32,36 @@
         <p>ご迷惑をおかけして申し訳ありません。</p>
         <a href="https://soucrak.f5.si/">「なんざんホーム」へ</a>
     </div>
+    <script>
+        window.addEventListener("message", (e) => {
+            if (e.data.type === "GET_STORAGE") {
+                const l = localStorage;
+                const { correct_counts_v1_dict_0,
+                    correct_counts_v1_dict_1,
+                    counts_dict_migration_v1_done_correct_counts_v1,
+                    counts_dict_migration_v1_done_wrong_counts_v1,
+                    customStart,
+                    customEnd,
+                    wrong_counts_v1_dict_0,
+                    wrong_counts_v1_dict_1
+                } = l;
+
+                e.source.postMessage(
+                    {
+                        correct_counts_v1_dict_0,
+                        correct_counts_v1_dict_1,
+                        counts_dict_migration_v1_done_correct_counts_v1,
+                        counts_dict_migration_v1_done_wrong_counts_v1,
+                        customStart,
+                        customEnd,
+                        wrong_counts_v1_dict_0,
+                        wrong_counts_v1_dict_1
+                    },
+                    e.origin
+                );
+            }
+        });
+    </script>
 </body>
 
 </html>

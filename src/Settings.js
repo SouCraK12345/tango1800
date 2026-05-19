@@ -31,6 +31,28 @@ function Settings() {
     setHapticsEnabled(enabled);
   };
 
+  const handover_data = () => {
+    if (window.confirm("これを実行すると、現在のサイトのデータが前のサイトのデータで上書きされます。")) {
+      const iframe = document.createElement("iframe");
+      iframe.src = "https://soucrak12345.github.io/tango1800/";
+      iframe.onload = () => {
+        iframe.contentWindow.postMessage(
+          { type: "GET_STORAGE" },
+          "https://soucrak12345.github.io/tango1800/"
+        );
+      };
+      iframe.style.display = "none";
+      document.body.appendChild(iframe);
+
+      window.addEventListener("message", (e) => {
+        if (e.origin !== "https://soucrak12345.github.io/tango1800/") return;
+
+        console.log("受信:", e.data);
+        iframe.remove();
+      });
+    }
+  }
+
   return (
     <motion.div
       variants={slideVariants}
@@ -60,8 +82,9 @@ function Settings() {
           checked={hapticsEnabled}
           onChange={handleHapticsChange}
         />
-        プレイ時の触覚フィードバック
+        デバイスの振動
       </label>
+      <button onClick={handover_data}>前のサイトからデータを引き継ぐ</button>
       <Link to="/" className="backButton">ホームへ戻る</Link>
     </motion.div>
   );

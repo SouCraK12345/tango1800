@@ -82,9 +82,13 @@ function Mode() {
                 みんなで{!isOnline ? " (オフライン時は利用不可)" : ""}
             </button>
             <button onClick={() => navigate("/mistakes")}>問題一覧を見る</button>
-            <div class="schedule">
-                <span>現在のスケジュール(<span class="date">15:00 ~ 17:00</span>)</span>
-                <div class="range">{online_range}</div>
+            <div className="schedule">
+                <span>現在のスケジュール(<span className="date">15:00 ~ 17:00</span>)</span>
+                <div className="range">{online_range}</div>
+            </div>
+            <div className="changed-url">
+                <h3>[お知らせ]サイトのURLが変更されました</h3>
+                <Link to="/settings">前のサイトからデータを引き継ぐ</Link>
             </div>
         </motion.div>);
 }

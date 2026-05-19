@@ -8,7 +8,7 @@
   height: 100%;
 }
 
-.schedule{
+.schedule {
   display: flex;
   flex-direction: column;
   background-color: whitesmoke;
@@ -17,4 +17,15 @@
   padding: 5px;
   align-items: center;
   margin-top: 20px;
+}
+
+.changed-url {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
 }
