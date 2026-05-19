@@ -48,8 +48,12 @@ function Settings() {
 
       window.addEventListener("message", (e) => {
         if (e.origin !== "https://soucrak12345.github.io") return;
-
         console.log("受信:", e.data);
+        for(var i in e.data){
+          if(e.data[i] !== undefined){
+            localStorage[i] = e.data[i];
+          }
+        }
         iframe.remove();
       });
     }
