@@ -34,7 +34,6 @@
     </div>
     <script>
         window.addEventListener("message", (e) => {
-            console.log(e.data.type);
             if (e.data.type === "GET_STORAGE") {
                 const l = localStorage;
                 const { correct_counts_v1_dict_0,
