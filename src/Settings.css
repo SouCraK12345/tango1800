@@ -20,6 +20,14 @@
   margin-top: 12px;
 }
 
+.handoverStatus {
+  max-width: min(420px, 88vw);
+  margin: 0;
+  color: #333;
+  text-align: center;
+  line-height: 1.5;
+}
+
 /* 1. デフォルトのスタイルをリセット */
 input[type="range"] {
   -webkit-appearance: none; /* Chrome, Safari, Edge用 */

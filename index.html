@@ -33,34 +33,57 @@
         <a href="https://soucrak.f5.si/">「なんざんホーム」へ</a>
     </div>
     <script>
-        window.addEventListener("message", (e) => {
-            if (e.data.type === "GET_STORAGE") {
-                const l = localStorage;
-                const { correct_counts_v1_dict_0,
-                    correct_counts_v1_dict_1,
-                    counts_dict_migration_v1_done_correct_counts_v1,
-                    counts_dict_migration_v1_done_wrong_counts_v1,
-                    customStart,
-                    customEnd,
-                    wrong_counts_v1_dict_0,
-                    wrong_counts_v1_dict_1
-                } = l;
+        const HANDOVER_ALLOWED_ORIGINS = [
+            "https://soucrak.f5.si",
+            "http://localhost:3000",
+            "http://localhost:3001",
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:3001"
+        ];
+        const HANDOVER_STORAGE_KEYS = [
+            "correct_counts_v1",
+            "wrong_counts_v1",
+            "correct_counts_v1_dict_0",
+            "correct_counts_v1_dict_1",
+            "wrong_counts_v1_dict_0",
+            "wrong_counts_v1_dict_1",
+            "counts_dict_migration_v1_done_correct_counts_v1",
+            "counts_dict_migration_v1_done_wrong_counts_v1",
+            "customStart",
+            "customEnd"
+        ];
 
-                e.source.postMessage(
-                    {
-                        correct_counts_v1_dict_0,
-                        correct_counts_v1_dict_1,
-                        counts_dict_migration_v1_done_correct_counts_v1,
-                        counts_dict_migration_v1_done_wrong_counts_v1,
-                        customStart,
-                        customEnd,
-                        wrong_counts_v1_dict_0,
-                        wrong_counts_v1_dict_1
-                    },
-                    e.origin
-                );
+        function collectHandoverStorage() {
+            return HANDOVER_STORAGE_KEYS.reduce((storage, key) => {
+                const value = localStorage.getItem(key);
+                if (value !== null) storage[key] = value;
+                return storage;
+            }, {});
+        }
+
+        function sendHandoverStorage(target, targetOrigin) {
+            if (!target || !HANDOVER_ALLOWED_ORIGINS.includes(targetOrigin)) return;
+            target.postMessage(
+                {
+                    type: "STORAGE_DATA",
+                    storage: collectHandoverStorage()
+                },
+                targetOrigin
+            );
+        }
+
+        window.addEventListener("message", (e) => {
+            if (e.data && e.data.type === "GET_STORAGE") {
+                sendHandoverStorage(e.source, e.origin);
             }
         });
+
+        const params = new URLSearchParams(window.location.search);
+        const handoverOrigin = params.get("origin");
+        if (params.get("handover") === "1" && handoverOrigin) {
+            sendHandoverStorage(window.opener, handoverOrigin);
+            window.setTimeout(() => window.close(), 500);
+        }
     </script>
 </body>
 
