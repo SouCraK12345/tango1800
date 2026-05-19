@@ -32,7 +32,7 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-    <BrowserRouter basename="/tango1800">
+    <BrowserRouter basename="/">
       <AnimatedRoutes />
     </BrowserRouter>
   );
