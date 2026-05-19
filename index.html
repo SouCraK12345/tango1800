@@ -72,6 +72,27 @@
             );
         }
 
+        function returnHandoverStorage(returnUrl) {
+            let parsedReturnUrl;
+            try {
+                parsedReturnUrl = new URL(returnUrl);
+            } catch {
+                return;
+            }
+
+            if (!HANDOVER_ALLOWED_ORIGINS.includes(parsedReturnUrl.origin)) return;
+
+            const payload = {
+                type: "STORAGE_DATA",
+                storage: collectHandoverStorage()
+            };
+            const serializedPayload = JSON.stringify(payload);
+
+            window.name = serializedPayload;
+            parsedReturnUrl.hash = "handoverData=" + encodeURIComponent(serializedPayload);
+            window.location.replace(parsedReturnUrl.toString());
+        }
+
         window.addEventListener("message", (e) => {
             if (e.data && e.data.type === "GET_STORAGE") {
                 sendHandoverStorage(e.source, e.origin);
@@ -80,6 +101,11 @@
 
         const params = new URLSearchParams(window.location.search);
         const handoverOrigin = params.get("origin");
+        const handoverReturnUrl = params.get("returnUrl");
+        if (params.get("handover") === "1" && handoverReturnUrl) {
+            returnHandoverStorage(handoverReturnUrl);
+        }
+
         if (params.get("handover") === "1" && handoverOrigin) {
             sendHandoverStorage(window.opener, handoverOrigin);
             window.setTimeout(() => window.close(), 500);

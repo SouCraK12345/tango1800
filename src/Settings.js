@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   getHapticsEnabled,
   getVolumeLevel,
@@ -11,9 +11,7 @@ import "./Settings.css";
 
 const LEGACY_SITE_ORIGIN = "https://soucrak12345.github.io";
 const LEGACY_SITE_URL = `${LEGACY_SITE_ORIGIN}/tango1800/`;
-const HANDOVER_REQUEST_TYPE = "GET_STORAGE";
 const HANDOVER_RESPONSE_TYPE = "STORAGE_DATA";
-const HANDOVER_TIMEOUT_MS = 10000;
 const HANDOVER_STORAGE_KEYS = [
   "correct_counts_v1",
   "wrong_counts_v1",
@@ -27,6 +25,41 @@ const HANDOVER_STORAGE_KEYS = [
   "customEnd",
 ];
 
+function importHandoverStorage(storageData) {
+  let importedCount = 0;
+
+  HANDOVER_STORAGE_KEYS.forEach((key) => {
+    const value = storageData[key];
+    if (value !== undefined && value !== null) {
+      localStorage.setItem(key, String(value));
+      importedCount += 1;
+    }
+  });
+
+  return importedCount;
+}
+
+function readHandoverPayload() {
+  if (window.name) {
+    try {
+      const payload = JSON.parse(window.name);
+      if (payload.type === HANDOVER_RESPONSE_TYPE && payload.storage) {
+        return payload;
+      }
+    } catch {
+      // Try the URL hash fallback below.
+    }
+  }
+
+  const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  const handoverData = hashParams.get("handoverData");
+  if (!handoverData) return null;
+
+  const payload = JSON.parse(handoverData);
+  if (payload.type !== HANDOVER_RESPONSE_TYPE || !payload.storage) return null;
+  return payload;
+}
+
 const slideVariants = {
   initial: { x: "100%", opacity: 0 },
   animate: { x: 0, opacity: 1 },
@@ -38,6 +71,27 @@ function Settings() {
   const [hapticsEnabled, setHapticsEnabledState] = useState(getHapticsEnabled());
   const [handoverStatus, setHandoverStatus] = useState("");
   const [isHandingOver, setIsHandingOver] = useState(false);
+
+  useEffect(() => {
+    if (!window.name && !window.location.hash.includes("handoverData=")) return;
+
+    try {
+      const payload = readHandoverPayload();
+      if (!payload) return;
+
+      const importedCount = importHandoverStorage(payload.storage);
+      setHandoverStatus(
+        importedCount > 0
+          ? `引き継ぎが完了しました。${importedCount}件のデータを保存しました。`
+          : "前のサイトに引き継げるデータが見つかりませんでした。"
+      );
+    } catch {
+      setHandoverStatus("引き継ぎデータの読み込みに失敗しました。もう一度お試しください。");
+    } finally {
+      window.name = "";
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  }, []);
 
   const handleChange = (event) => {
     const nextVolume = Number(event.target.value);
@@ -56,89 +110,16 @@ function Settings() {
     if (!window.confirm("これを実行すると、現在のサイトのデータが前のサイトのデータで上書きされます。")) return;
 
     setIsHandingOver(true);
-    setHandoverStatus("前のサイトからデータを取得しています...");
+    setHandoverStatus("前のサイトへ移動してデータを取得します...");
 
-    let iframe = null;
-    let popup = null;
-    let timeoutId = null;
-    let requestIntervalId = null;
-
-    const cleanup = () => {
-      window.removeEventListener("message", handleMessage);
-      if (timeoutId) window.clearTimeout(timeoutId);
-      if (requestIntervalId) window.clearInterval(requestIntervalId);
-      if (iframe) iframe.remove();
-      if (popup && !popup.closed) popup.close();
-      setIsHandingOver(false);
-    };
-
-    const importStorage = (storageData) => {
-      let importedCount = 0;
-
-      HANDOVER_STORAGE_KEYS.forEach((key) => {
-        const value = storageData[key];
-        if (value !== undefined && value !== null) {
-          localStorage.setItem(key, String(value));
-          importedCount += 1;
-        }
-      });
-
-      cleanup();
-      setHandoverStatus(
-        importedCount > 0
-          ? `引き継ぎが完了しました。${importedCount}件のデータを保存しました。`
-          : "前のサイトに引き継げるデータが見つかりませんでした。"
-      );
-    };
-
-    function handleMessage(e) {
-      if (e.origin !== LEGACY_SITE_ORIGIN) return;
-      if (!e.data || typeof e.data !== "object") return;
-
-      if (e.data.type === HANDOVER_RESPONSE_TYPE) {
-        importStorage(e.data.storage || {});
-        return;
-      }
-
-      if (HANDOVER_STORAGE_KEYS.some((key) => Object.prototype.hasOwnProperty.call(e.data, key))) {
-        importStorage(e.data);
-      }
-    }
-
-    window.addEventListener("message", handleMessage);
-
+    const returnUrl = new URL(window.location.href);
+    returnUrl.search = "";
+    returnUrl.hash = "";
     const handoverUrl = new URL(LEGACY_SITE_URL);
     handoverUrl.searchParams.set("handover", "1");
-    handoverUrl.searchParams.set("origin", window.location.origin);
+    handoverUrl.searchParams.set("returnUrl", returnUrl.toString());
 
-    popup = window.open(
-      handoverUrl.toString(),
-      "tango1800-handover",
-      "popup,width=480,height=640"
-    );
-
-    if (!popup) {
-      iframe = document.createElement("iframe");
-      iframe.src = LEGACY_SITE_URL;
-      iframe.style.display = "none";
-      iframe.onload = () => {
-        iframe.contentWindow.postMessage(
-          { type: HANDOVER_REQUEST_TYPE },
-          LEGACY_SITE_ORIGIN
-        );
-      };
-      document.body.appendChild(iframe);
-    } else {
-      requestIntervalId = window.setInterval(() => {
-        if (popup.closed) return;
-        popup.postMessage({ type: HANDOVER_REQUEST_TYPE }, LEGACY_SITE_ORIGIN);
-      }, 500);
-    }
-
-    timeoutId = window.setTimeout(() => {
-      cleanup();
-      setHandoverStatus("引き継ぎに失敗しました。ポップアップがブロックされていないか確認して、もう一度お試しください。");
-    }, HANDOVER_TIMEOUT_MS);
+    window.location.assign(handoverUrl.toString());
   };
 
   return (
