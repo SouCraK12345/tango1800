@@ -35,17 +35,19 @@ function Settings() {
     if (window.confirm("これを実行すると、現在のサイトのデータが前のサイトのデータで上書きされます。")) {
       const iframe = document.createElement("iframe");
       iframe.src = "https://soucrak12345.github.io/tango1800/";
+
       iframe.onload = () => {
         iframe.contentWindow.postMessage(
           { type: "GET_STORAGE" },
-          "https://soucrak12345.github.io/tango1800/"
+          "https://soucrak12345.github.io"
         );
       };
+
       iframe.style.display = "none";
       document.body.appendChild(iframe);
 
       window.addEventListener("message", (e) => {
-        if (e.origin !== "https://soucrak12345.github.io/tango1800/") return;
+        if (e.origin !== "https://soucrak12345.github.io") return;
 
         console.log("受信:", e.data);
         iframe.remove();
