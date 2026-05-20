@@ -26,8 +26,7 @@ function Settings() {
     const search_params = new URLSearchParams(location.search);
     if (search_params.has("previous_data"));
     const data = JSON.parse(search_params.get("previous_data"));
-    console.log(data);
-    for(var i in data){
+    for (var i in data) {
       localStorage[i] = data[i];
     }
   }, [location]);
@@ -51,7 +50,7 @@ function Settings() {
     setIsHandingOver(true);
     setHandoverStatus("前のサイトへ移動してデータを取得します...");
 
-    window.location.href = `https://soucrak12345.github.io/tango1800/?callbackurl=${location.host}&export`;
+    window.location.href = `https://soucrak12345.github.io/tango1800/?callbackurl=${window.location.origin + window.location.pathname}&export`;
   };
 
   return (

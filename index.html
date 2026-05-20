@@ -56,7 +56,7 @@
         
         const params = new URLSearchParams(location.search);
         if(params.has("export")){
-            location.href = "https://" + params.get("callbackurl") + "/settings/?previous_data=" + JSON.stringify(collectHandoverStorage());
+            location.href = params.get("callbackurl") + "?previous_data=" + JSON.stringify(collectHandoverStorage());
         }
     </script>
 </body>
