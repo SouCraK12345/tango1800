@@ -20,16 +20,20 @@ function Settings() {
   const [hapticsEnabled, setHapticsEnabledState] = useState(getHapticsEnabled());
   const [handoverStatus, setHandoverStatus] = useState("");
   const [isHandingOver, setIsHandingOver] = useState(false);
+  const [hasHandedOver, setHandedOver] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     const search_params = new URLSearchParams(location.search);
-    if (search_params.has("previous_data"));
-    const data = JSON.parse(search_params.get("previous_data"));
-    for (var i in data) {
-      localStorage[i] = data[i];
+    if (search_params.has("previous_data") && !hasHandedOver) {
+      setHandedOver(true);
+      const data = JSON.parse(search_params.get("previous_data"));
+      for (var i in data) {
+        localStorage[i] = data[i];
+      }
+      alert("データを引き継ぎました");
     }
-  }, [location]);
+  }, [location, hasHandedOver]);
 
   const handleChange = (event) => {
     const nextVolume = Number(event.target.value);

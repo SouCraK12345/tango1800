@@ -6,12 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap');
+
         body {
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
+            margin: 20px;
             overflow: hidden;
+            font-family: "Noto Sans JP", sans-serif;
         }
 
         .main-container {
@@ -23,13 +27,22 @@
             justify-content: center;
             padding: 20px;
         }
+
+        h3 {
+            text-align: center;
+        }
+
+        span {
+            white-space: nowrap;
+        }
     </style>
 </head>
 
 <body>
     <div class="main-container">
-        <h1>現在、サーバーメンテナンス中です。</h1>
-        <p>ご迷惑をおかけして申し訳ありません。</p>
+        <h3><span>このページは</span><a
+                href="https://tango1800.soucrak.f5.si/">https://tango1800.soucrak.f5.si/</a><span>に移行しました</span></h3>
+        <p>現行のデータを引き継ぐには、<a href="#" onclick="callback()">こちら</a>をクリックしてください。</p>
         <a href="https://soucrak.f5.si/">「なんざんホーム」へ</a>
     </div>
     <script>
@@ -53,10 +66,14 @@
                 return storage;
             }, {});
         }
-        
+
+        function callback(url = "https://tango1800.soucrak.f5.si/settings/") {
+            location.href = url + "?previous_data=" + JSON.stringify(collectHandoverStorage());
+        }
+
         const params = new URLSearchParams(location.search);
-        if(params.has("export")){
-            location.href = params.get("callbackurl") + "?previous_data=" + JSON.stringify(collectHandoverStorage());
+        if (params.has("export")) {
+            callback(params.get("callbackurl"));
         }
     </script>
 </body>
