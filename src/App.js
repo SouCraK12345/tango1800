@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import Home from "./Home";
 import Select from "./Select";
@@ -12,6 +13,23 @@ import './App.css';
 
 function AnimatedRoutes() {
   const location = useLocation();
+
+  useEffect(() => {
+    const script1 = document.createElement("script");
+    script1.async = true;
+    script1.src =
+      "https://www.googletagmanager.com/gtag/js?id=G-9BV2543QVK";
+    document.head.appendChild(script1);
+
+    const script2 = document.createElement("script");
+    script2.innerHTML = `
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9BV2543QVK');
+    `;
+    document.head.appendChild(script2);
+  }, []);
 
   return (
     <AnimatePresence mode="wait" initial={false}>
