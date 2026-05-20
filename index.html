@@ -35,6 +35,34 @@
         span {
             white-space: nowrap;
         }
+
+        .fallback-button {
+            margin-top: 12px;
+            padding: 8px 12px;
+            border: 1px solid #ccd4e0;
+            border-radius: 6px;
+            background-color: #fff;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .handover-output {
+            display: none;
+            width: min(100%, 640px);
+            margin-top: 12px;
+        }
+
+        .handover-output textarea {
+            width: 100%;
+            min-height: 120px;
+            box-sizing: border-box;
+            font-family: monospace;
+        }
+
+        .handover-output p {
+            margin: 8px 0 0;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -43,6 +71,13 @@
         <h3><span>このページは</span><a
                 href="https://tango1800.soucrak.f5.si/">https://tango1800.soucrak.f5.si/</a><span>に移行しました</span></h3>
         <p>現行のデータを引き継ぐには、<a href="#" onclick="callback()">こちら</a>をクリックしてください。</p>
+        <button class="fallback-button" type="button" onclick="showManualHandoverData()">うまくいかないときは</button>
+        <div class="handover-output" id="handoverOutput">
+            <textarea id="handoverText" readonly></textarea>
+            <p>上のテキストをコピーして、
+                <a href="https://tango1800.soucrak.f5.si/settings?migration">このページ</a>に貼り付けてください
+            </p>
+        </div>
         <a href="https://soucrak.f5.si/">「なんざんホーム」へ</a>
     </div>
     <script>
@@ -69,6 +104,14 @@
 
         function callback(url = "https://tango1800.soucrak.f5.si/settings") {
             location.href = url + "?previous_data=" + JSON.stringify(collectHandoverStorage());
+        }
+
+        function showManualHandoverData() {
+            const handoverText = document.getElementById("handoverText");
+            handoverText.value = JSON.stringify(collectHandoverStorage());
+            document.getElementById("handoverOutput").style.display = "block";
+            handoverText.focus();
+            handoverText.select();
         }
 
         const params = new URLSearchParams(location.search);

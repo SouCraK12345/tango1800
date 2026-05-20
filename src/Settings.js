@@ -32,6 +32,16 @@ function Settings() {
         localStorage[i] = data[i];
       }
       alert("データを引き継ぎました");
+      return;
+    }
+    if(search_params.has("migration") && !hasHandedOver){
+      setHandedOver(true);
+      const data = JSON.parse(prompt("コピーしたテキストを貼り付けてください"));
+      // eslint-disable-next-line no-redeclare
+      for (var i in data) {
+        localStorage[i] = data[i];
+      }
+      alert("データを引き継ぎました");
     }
   }, [location, hasHandedOver]);
 
