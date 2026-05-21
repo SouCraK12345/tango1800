@@ -463,6 +463,7 @@ const loginRequest = async (body) => {
         return result;
     } catch (error) {
         console.error("error", error);
+        return "Invalid Token";
     }
 };
 

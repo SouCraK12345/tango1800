@@ -16,6 +16,7 @@ function Mode() {
     const [online_range, setOnlineRange] = useState("インターネットに接続しています...");
     let [online_range_start, setOnlineRangeStart] = useState(0);
     let [online_range_end, setOnlineRangeEnd] = useState(0);
+    let [online_range_dict, setOnlineRangeDict] = useState(0);
 
     useEffect(() => {
         const handleOnline = () => setIsOnline(true);
@@ -58,6 +59,7 @@ function Mode() {
                 );
                 setOnlineRangeStart(data.start);
                 setOnlineRangeEnd(data.end);
+                setOnlineRangeDict(data.dict);
     
             } catch (err) {
                 console.error("Error:", err);
@@ -80,7 +82,7 @@ function Mode() {
             <h1 className="title">モード選択</h1>
             <button onClick={() => navigate("/select?mode=alone")}>ひとりで</button>
             <button
-                onClick={() => navigate(`/game?mode=together&dict=0&start=${online_range_start}&end=${online_range_end}`)}
+                onClick={() => navigate(`/game?mode=together&start=${online_range_start}&end=${online_range_end}&dict=${online_range_dict}`)}
                 disabled={!isOnline}
                 title={!isOnline ? "オフライン時は利用できません" : ""}
             >

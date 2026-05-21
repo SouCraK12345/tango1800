@@ -62,6 +62,9 @@ function StartGame() {
         const j = Math.floor(Math.random() * (i + 1));
         [question_list[i], question_list[j]] = [question_list[j], question_list[i]];
     }
+    question_list = question_list.slice(0,50);
+    console.log(question_list);
+    number_of_questions = 50;
     q_num = 0;
     game_start_time = Date.now();
 
@@ -310,9 +313,9 @@ function update() {
         return
     }
     if (finish) {
-        clearTimeout(finishTimeOut);
+        requestAnimationFrame(() => clearTimeout(finishTimeOut));
         document.querySelector(".finish").classList.add("show");
-        sendMessage({ type: "finish", user_name: localStorage.getItem("user_name"), score: number_of_questions - (correct_answers + wrong_answers) });
+        sendMessage({ type: "finish", user_name: localStorage.getItem("user_name"), score: blocks.length });
         return;
     }
     const animationFrameId = requestAnimationFrame(update);
@@ -348,11 +351,13 @@ function onMessage(event) {
     }
 
     if (data.type === "finish") {
-        finish = true;
-        if (ranking.length == 0) {
+        if (ranking.length == 0 && !finish) {
             document.querySelector(".finishBy").innerHTML = "by " + data.user_name;
         }
-        ranking.push(data)
+        finish = true;
+        if (ranking.filter(item => item.user_name == data.user_name).length == 0) {
+            ranking.push(data)
+        }
     }
 }
 
@@ -456,7 +461,8 @@ function MultiPlay() {
 
         ws = new WebSocket("wss://eitango-server.souki110212.workers.dev");
 
-        fetch(`${process.env.PUBLIC_URL}/eitango.json`)
+        const json_file = [`${process.env.PUBLIC_URL}/eitango.json`, `${process.env.PUBLIC_URL}/sokutan.json`]
+        fetch(json_file[dict])
             .then(res => res.json())
             .then(data => {
                 eitango = data;
@@ -476,7 +482,7 @@ function MultiPlay() {
         canvas.height = 1000;
         ctx.translate(100, 0);
         // 初期化
-        const totalBlocks = end_num - start_num + 1;
+        const totalBlocks = 50;
         for (let i = 0; i < totalBlocks; i++) {
             blocks.push({
                 x: 0,
@@ -504,7 +510,7 @@ function MultiPlay() {
                     breakBlock();
                     if (question_list.length === 0) {
                         document.querySelector(".finish").classList.add("show");
-                        sendMessage({ type: "finish", user_name: localStorage.getItem("user_name"), score: number_of_questions - (correct_answers + wrong_answers) });
+                        sendMessage({ type: "finish", user_name: localStorage.getItem("user_name"), score: blocks.length });
                         return;
                     }
                     next_question();
@@ -547,17 +553,18 @@ function MultiPlay() {
                     elapsed_time,
                     correct_count: correct_answers,
                     wrong_count: wrong_answers,
-                    solved_count: correct_answers + wrong_answers,
+                    solved_count: number_of_questions - blocks.length,
                     ranking
                 }
             });
         });
-        finishTimeOut = setTimeout(() => {
+        setTimeout(() => {
             StartGame();
-            setTimeout(() => {
+            finishTimeOut = setTimeout(() => {
                 document.querySelector(".finish").classList.add("show");
                 document.querySelector(".finishBy").innerHTML = "due to time running out";
-                sendMessage({ type: "finish", user_name: localStorage.getItem("user_name"), score: number_of_questions - (correct_answers + wrong_answers) });
+                finish = true;
+                sendMessage({ type: "finish", user_name: localStorage.getItem("user_name"), score: blocks.length });
             }, 120000)
         }, 2000);
 

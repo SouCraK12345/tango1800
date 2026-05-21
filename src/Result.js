@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import './Result.css';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const slideVariants = {
     initial: { x: "100%", opacity: 0 },
@@ -9,7 +9,6 @@ const slideVariants = {
     exit: { x: "-100%", opacity: 0 },
 };
 
-let rankingRendered = false;
 
 function showRanking(players) {
     console.log(players);
@@ -39,6 +38,7 @@ function showRanking(players) {
 }
 
 function Result() {
+const rankingRendered = useRef(false);
     const navigate = useNavigate();
     const location = useLocation();
     const data = location.state;
@@ -62,12 +62,12 @@ function Result() {
         )
     }
     useEffect(() => {
-        if (rankingRendered) return;
-        rankingRendered = true;
+        if (rankingRendered.current) return;
+        rankingRendered.current = true;
         if (Object.keys(data).includes("ranking")) {
             showRanking(data.ranking)
         }
-    }, [])
+    }, [rankingRendered])
     return (
         <motion.div
             variants={slideVariants}
