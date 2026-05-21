@@ -6,6 +6,7 @@ import { WebHaptics, defaultPatterns } from "https://cdn.skypack.dev/web-haptics
 import { useEffect, useState } from "react";
 import { incrementCorrectCount, incrementWrongCount } from "./wrongCountStorage";
 import { getHapticsEnabled, getVolumeLevel } from "./settingsStorage";
+import { feFuncA } from "framer-motion/client";
 
 const slideVariants = {
     initial: { x: "100%", opacity: 0 },
@@ -143,6 +144,7 @@ let startSoonReceived = false;
 let startGameReceived = false;
 let currentQuestionHadMistake = false;
 let finish = false;
+let finishTimeOut;
 
 function resetGameState() {
     q_num = 0;
@@ -308,6 +310,7 @@ function update() {
         return
     }
     if (finish) {
+        clearTimeout(finishTimeOut);
         document.querySelector(".finish").classList.add("show");
         sendMessage({ type: "finish", user_name: localStorage.getItem("user_name"), score: number_of_questions - (correct_answers + wrong_answers) });
         return;
@@ -549,7 +552,7 @@ function MultiPlay() {
                 }
             });
         });
-        setTimeout(() => {
+        finishTimeOut = setTimeout(() => {
             StartGame();
             setTimeout(() => {
                 document.querySelector(".finish").classList.add("show");

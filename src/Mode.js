@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import './Mode.css';
+import { datalist } from "framer-motion/client";
 
 const slideVariants = {
     initial: { x: "100%", opacity: 0 },
@@ -13,6 +14,8 @@ function Mode() {
     const navigate = useNavigate();
     const [isOnline, setIsOnline] = useState(navigator.onLine);
     const [online_range, setOnlineRange] = useState("インターネットに接続しています...");
+    let [online_range_start, setOnlineRangeStart] = useState(0);
+    let [online_range_end, setOnlineRangeEnd] = useState(0);
 
     useEffect(() => {
         const handleOnline = () => setIsOnline(true);
@@ -53,6 +56,8 @@ function Mode() {
                 setOnlineRange(
                     `${dictName} ${data.start} ~ ${data.end}`
                 );
+                setOnlineRangeStart(data.start);
+                setOnlineRangeEnd(data.end);
     
             } catch (err) {
                 console.error("Error:", err);
@@ -75,7 +80,7 @@ function Mode() {
             <h1 className="title">モード選択</h1>
             <button onClick={() => navigate("/select?mode=alone")}>ひとりで</button>
             <button
-                onClick={() => navigate("/game?mode=together")}
+                onClick={() => navigate(`/game?mode=together&dict=0&start=${online_range_start}&end=${online_range_end}`)}
                 disabled={!isOnline}
                 title={!isOnline ? "オフライン時は利用できません" : ""}
             >
@@ -83,7 +88,7 @@ function Mode() {
             </button>
             <button onClick={() => navigate("/mistakes")}>問題一覧を見る</button>
             <div className="schedule">
-                <span>現在のスケジュール(<span className="date">15:00 ~ 17:00</span>)</span>
+                <span>現在のスケジュール<span className="date">{/*15:00 ~ 17:00*/}</span></span>
                 <div className="range">{online_range}</div>
             </div>
             <div className="changed-url">

@@ -174,7 +174,7 @@ function speakQuestionWord(word) {
     utterance.lang = "en-US";
     utterance.rate = 0.9;
     utterance.pitch = 1;
-    utterance.volume = getVolumeLevel();
+    utterance.volume = getVolumeLevel() * 2; 
     window.speechSynthesis.speak(utterance);
 }
 
@@ -268,13 +268,13 @@ function resetGameState() {
 }
 
 // ===== 割り込み追加 =====
-function addBlock(indexFromBottom) {
+function addBlock(indexFromBottom, color="#f44336") {
     // 挿入
     blocks.splice(indexFromBottom, 0, {
         x: 0,
         y: 0,
         vy: 0,
-        color: "#f44336"
+        color
     });
 
     // 全ブロックを強制再配置（ここがポイント）
@@ -500,13 +500,11 @@ function Game() {
     const [dict_name, setDictName] = useState(0);
     const location = useLocation();
     const params = new URLSearchParams(location.search);
-    const readyTitleText = params.get("mode") === "together"
-        ? "ランダム"
-        : (params.get("priority") === "leastPlayed50"
-            ? "プレイ回数が少ない順"
-            : (params.get("priority") === "lowAccuracy50"
-                ? "正答率が低い順"
-                : `${parseInt(params.get("start")) || 1} ~ ${parseInt(params.get("end")) || 1800}`));
+    const readyTitleText = (params.get("priority") === "leastPlayed50"
+        ? "プレイ回数が少ない順"
+        : (params.get("priority") === "lowAccuracy50"
+            ? "正答率が低い順"
+            : `${parseInt(params.get("start")) || 1} ~ ${parseInt(params.get("end")) || 1800}`));
 
     function logout() {
         localStorage.removeItem("user_name");
@@ -528,8 +526,8 @@ function Game() {
                 navigate("/mode");
                 return;
             }
-            start_num = 1;
-            end_num = 1800;
+            // start_num = 1;
+            // end_num = 1800;
             document.querySelector(".dialog").showModal();
             setTimeout(() => {
                 document.querySelector(".dialog").style.display = "flex";
@@ -603,6 +601,11 @@ function Game() {
                         return;
                     }
                     next_question();
+                    if (mode == "together") {
+                        addBlock(question_list.length, "#4CAF50");
+                        question_list.push(question_list[q_num]);
+                        number_of_questions += 1;
+                    }
                 } else {
                     currentQuestionHadMistake = true;
                     incrementWrongCount(question_list[q_num][0], dict);
@@ -622,10 +625,10 @@ function Game() {
                         addBlock(randomNum);
                         question_list.splice(randomNum, 0, question_list[q_num]);
                     }
+                    number_of_questions += 2;
                     const audio = new Audio(`${process.env.PUBLIC_URL}/wrong.mp3`);
                     audio.volume = getVolumeLevel();
                     audio.play();
-                    number_of_questions += 2;
                 }
             });
         });

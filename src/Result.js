@@ -9,6 +9,8 @@ const slideVariants = {
     exit: { x: "-100%", opacity: 0 },
 };
 
+let rankingRendered = false;
+
 function showRanking(players) {
     console.log(players);
 
@@ -60,10 +62,12 @@ function Result() {
         )
     }
     useEffect(() => {
+        if (rankingRendered) return;
+        rankingRendered = true;
         if (Object.keys(data).includes("ranking")) {
             showRanking(data.ranking)
         }
-    })
+    }, [])
     return (
         <motion.div
             variants={slideVariants}

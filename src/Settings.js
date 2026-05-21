@@ -64,7 +64,7 @@ function Settings() {
     setIsHandingOver(true);
     setHandoverStatus("前のサイトへ移動してデータを取得します...");
 
-    window.location.href = `https://soucrak12345.github.io/tango1800/?callbackurl=${window.location.origin + window.location.pathname}&export`;
+    window.location.href = `https://soucrak12345.github.io/tango1800/`;
   };
 
   return (
