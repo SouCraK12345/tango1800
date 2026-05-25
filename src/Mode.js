@@ -79,6 +79,16 @@ function Mode() {
             className="Mode"
         >
             <Link to="/" className="back">&lt; もどる</Link>
+            <Link
+                to="/settings"
+                className="settingsButton material-icons"
+                onClick={(e) => {
+                    document.querySelector(".settingsButton").style.display = "none";
+                    e.stopPropagation()
+                }}
+            >
+                settings
+            </Link>
             <h1 className="title">モード選択</h1>
             <button onClick={() => navigate("/select?mode=alone")}>ひとりで</button>
             <button

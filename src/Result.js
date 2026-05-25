@@ -64,10 +64,11 @@ const rankingRendered = useRef(false);
     useEffect(() => {
         if (rankingRendered.current) return;
         rankingRendered.current = true;
-        if (Object.keys(data).includes("ranking")) {
-            showRanking(data.ranking)
+        if (!data) return;
+        if (data && Object.prototype.hasOwnProperty.call(data, "ranking")) {
+            showRanking(data.ranking);
         }
-    }, [rankingRendered])
+    }, []);
     return (
         <motion.div
             variants={slideVariants}

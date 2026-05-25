@@ -120,7 +120,7 @@ function Settings() {
         {isHandingOver ? "引き継ぎ中..." : "前のサイトからデータを引き継ぐ"}
       </button>
       {handoverStatus && <p className="handoverStatus">{handoverStatus}</p>}
-      <Link to="/" className="backButton">ホームへ戻る</Link>
+      <Link to="/mode/" className="backButton">ホームへ戻る</Link>
     </motion.div>
   );
 }
