@@ -253,18 +253,29 @@ function update() {
         ctx.strokeRect(b.x, b.y, blockWidth, blockHeight);
     });
 
-    // 破片
-    particles.forEach(p => {
+    // 破片（画面外に出たら削除）
+    for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
         p.vy += p.gravity;
         p.x += p.vx;
         p.y += p.vy;
+
+        if (
+            p.x + p.size < 0 ||
+            p.x > canvas.width ||
+            p.y + p.size < 0 ||
+            p.y > canvas.height
+        ) {
+            particles.splice(i, 1);
+            continue;
+        }
 
         ctx.fillStyle = p.color;
         ctx.fillRect(p.x, p.y, p.size, p.size);
 
         ctx.strokeStyle = "#000";
         ctx.strokeRect(p.x, p.y, p.size, p.size);
-    });
+    }
 
     // 右下の正解数/総問題数も毎フレーム更新
     const correctElem = document.querySelector('.corner-correct');
