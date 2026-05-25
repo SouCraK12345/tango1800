@@ -6,17 +6,35 @@
   justify-content: center;
   width: 100%;
   height: 100%;
+  gap: 8px;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.Mode .title {
+  margin-bottom: 8px;
+}
+
+.Mode button {
+  max-width: 460px;
 }
 
 .schedule {
   display: flex;
   flex-direction: column;
-  background-color: whitesmoke;
-  border: 2px solid black;
-  border-radius: 5px;
-  padding: 5px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 14px;
+  padding: 14px 16px;
   align-items: center;
   margin-top: 20px;
+  width: min(500px, 92vw);
+  box-shadow: 0 10px 24px rgba(58, 45, 10, 0.1);
+}
+
+.schedule .range {
+  margin-top: 8px;
+  font-weight: 700;
 }
 
 .changed-url {
@@ -24,8 +42,20 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: white;
-  padding: 10px;
+  background: rgba(255, 255, 255, 0.76);
+  padding: 14px;
   margin: 10px;
-  border-radius: 10px;
+  border-radius: 14px;
+  width: min(500px, 92vw);
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.92);
+}
+
+.changed-url h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.changed-url a {
+  font-weight: 700;
 }

@@ -1,10 +1,13 @@
 .back {
-    color: gray;
+    color: #545454;
     text-decoration: none;
     font-size: 1em;
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 8px;
+    left: 8px;
+    background: rgba(255, 255, 255, 0.75);
+    padding: 6px 10px;
+    border-radius: 999px;
 }
 
 .Select {
@@ -15,6 +18,7 @@
     justify-content: center;
     width: 100%;
     height: 100%;
+    gap: 4px;
 }
 
 .SelectButton:active {
@@ -28,7 +32,8 @@
     align-items: center;
     justify-content: center;
     padding: 10px;
-    height: 80px;
+    height: 88px;
+    border-radius: 14px;
 }
 
 .rangeText {
@@ -36,8 +41,8 @@
 }
 
 .accuracy {
-    font-size: 0.7em;
-    color: #eee;
+    font-size: 0.8em;
+    color: #e8f4ff;
     margin-top: 5px;
 }
 
@@ -51,9 +56,9 @@
     transition: transform 0.4s ease;
     height: 60vh;
     padding: 20px;
-    background: #00000010;
+    background: rgba(255, 255, 255, 0.4);
     margin-top: 20px;
-    border-radius: 10px;
+    border-radius: 16px;
     overflow-x: hidden;
     gap: 20px;
     width: 200%;
@@ -62,6 +67,7 @@
 .slide {
     overflow-y: scroll;
     width: 360px;
+    padding-right: 4px;
 }
 
 .priorityModes {
@@ -80,7 +86,10 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 10px;
+    margin: 12px 0;
+    background: rgba(255, 255, 255, 0.65);
+    border-radius: 14px;
+    padding: 10px;
 }
 
 .customRange input {
@@ -111,7 +120,14 @@
 /* タブ */
 .tabs {
     display: flex;
-    gap: 20px;
+    gap: 12px;
+}
+
+.tabs button {
+    margin: 0;
+    width: auto;
+    min-width: 170px;
+    font-size: 0.95rem;
 }
 
 .tabs label {
@@ -128,6 +144,16 @@
 .slider {
     overflow-x: hidden;
     width: 400px;
+}
+
+@media (max-width: 480px) {
+    .slider {
+        width: 94vw;
+    }
+
+    .slide {
+        width: calc(94vw - 28px);
+    }
 }
 
 .accuracy_hidden>.SelectButton>.accuracy {

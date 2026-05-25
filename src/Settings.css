@@ -5,6 +5,13 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
+  width: min(560px, 94vw);
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  border-radius: 18px;
+  box-shadow: 0 16px 36px rgba(47, 36, 8, 0.14);
+  padding: 28px 20px;
+  box-sizing: border-box;
 }
 
 .volumeLabel {
@@ -91,4 +98,6 @@ input[type="range"]:active::-webkit-slider-thumb {
   align-items: center;
   gap: 8px;
   font-size: 1rem;
+  width: min(360px, 88vw);
+  justify-content: flex-start;
 }

@@ -2,9 +2,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
 
 body{
-  background-color: #fff2c7;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.6), transparent 45%),
+    radial-gradient(circle at 80% 0%, rgba(255, 214, 117, 0.55), transparent 45%),
+    linear-gradient(160deg, #fff6d8 0%, #ffecc2 100%);
   font-family: "Noto Sans JP", sans-serif;
   overflow: hidden;
+  color: #2c2a24;
 }
 
 #root {
@@ -19,14 +23,32 @@ body{
 
 
 button {
-    background-color: #2196F3;
+    background: linear-gradient(135deg, #2b9dff, #1674f3);
     color: white;
     padding: 12px 24px;
     border: none;
-    border-radius: 8px;
-    box-shadow: 0 5px #0b7dda;
+    border-radius: 12px;
+    box-shadow: 0 5px 0 #0b5fc9, 0 12px 28px rgba(20, 84, 164, 0.2);
     cursor: pointer;
     width: 100%;
-    font-size: 1.3em;
+    font-size: 1.08rem;
+    font-weight: 700;
     margin: 10px 0;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+button:hover {
+    filter: brightness(1.03);
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 #0b5fc9, 0 8px 16px rgba(20, 84, 164, 0.16);
+}
+
+button:disabled {
+    background: linear-gradient(135deg, #9fb7d6, #86a2c7);
+    box-shadow: 0 4px 0 #6d86a8;
+    cursor: not-allowed;
 }

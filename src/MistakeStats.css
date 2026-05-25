@@ -1,8 +1,8 @@
 .MistakeStats {
     width: 100%;
-    max-width: 800px;
+    max-width: 960px;
     height: 100%;
-    background: #f9fbff;
+    background: rgba(249, 251, 255, 0.68);
     padding: 20px;
     box-sizing: border-box;
     color: #222;
@@ -39,7 +39,7 @@
     overflow-x: auto;
     background: #fff;
     border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.1);
 }
 
 .statsTable {
