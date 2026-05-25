@@ -5,7 +5,7 @@ import './Loading.css';
 import { WebHaptics, defaultPatterns } from "https://cdn.skypack.dev/web-haptics";
 import { useEffect, useState } from "react";
 import { incrementCorrectCount, incrementWrongCount } from "./wrongCountStorage";
-import { getHapticsEnabled, getVolumeLevel } from "./settingsStorage";
+import { getHapticsEnabled, getSpeechEnabled, getVolumeLevel } from "./settingsStorage";
 import { feFuncA } from "framer-motion/client";
 
 const slideVariants = {
@@ -74,7 +74,7 @@ function StartGame() {
 
 
 function speakQuestionWord(word) {
-    if (!word || typeof window === "undefined" || !window.speechSynthesis) return;
+    if (!word || !getSpeechEnabled() || typeof window === "undefined" || !window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(word);
     utterance.lang = "en-US";

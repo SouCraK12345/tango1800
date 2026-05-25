@@ -3,8 +3,10 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   getHapticsEnabled,
+  getSpeechEnabled,
   getVolumeLevel,
   setHapticsEnabled,
+  setSpeechEnabled,
   setVolumeLevel,
 } from "./settingsStorage";
 import "./Settings.css";
@@ -18,6 +20,7 @@ const slideVariants = {
 function Settings() {
   const [volume, setVolume] = useState(getVolumeLevel());
   const [hapticsEnabled, setHapticsEnabledState] = useState(getHapticsEnabled());
+  const [speechEnabled, setSpeechEnabledState] = useState(getSpeechEnabled());
   const [handoverStatus, setHandoverStatus] = useState("");
   const [isHandingOver, setIsHandingOver] = useState(false);
   const [hasHandedOver, setHandedOver] = useState(false);
@@ -57,6 +60,12 @@ function Settings() {
     setHapticsEnabled(enabled);
   };
 
+  const handleSpeechChange = (event) => {
+    const enabled = event.target.checked;
+    setSpeechEnabledState(enabled);
+    setSpeechEnabled(enabled);
+  };
+
   const handover_data = () => {
     if (isHandingOver) return;
     if (!window.confirm("これを実行すると、現在のサイトのデータが前のサイトのデータで上書きされます。")) return;
@@ -89,6 +98,15 @@ function Settings() {
         value={volume}
         onChange={handleChange}
       />
+      <label className="toggleRow" htmlFor="speech-enabled">
+        <input
+          id="speech-enabled"
+          type="checkbox"
+          checked={speechEnabled}
+          onChange={handleSpeechChange}
+        />
+        音声読み上げ
+      </label>
       <label className="toggleRow" htmlFor="haptics-enabled">
         <input
           id="haptics-enabled"

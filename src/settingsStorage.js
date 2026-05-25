@@ -26,3 +26,17 @@ export function getHapticsEnabled() {
 export function setHapticsEnabled(enabled) {
   localStorage.setItem(HAPTICS_STORAGE_KEY, String(Boolean(enabled)));
 }
+
+
+const SPEECH_STORAGE_KEY = "speech_enabled_v1";
+const DEFAULT_SPEECH_ENABLED = true;
+
+export function getSpeechEnabled() {
+  const stored = localStorage.getItem(SPEECH_STORAGE_KEY);
+  if (stored === null) return DEFAULT_SPEECH_ENABLED;
+  return stored === "true";
+}
+
+export function setSpeechEnabled(enabled) {
+  localStorage.setItem(SPEECH_STORAGE_KEY, String(Boolean(enabled)));
+}
