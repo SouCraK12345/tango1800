@@ -53,6 +53,7 @@ function StartGame() {
     ws.onmessage = onMessage;
 
     document.querySelector(".Playing").style.display = "flex";
+    cacheHudElements();
     number_of_questions = end_num - start_num + 1;
     // 該当範囲をコピー
     question_list = eitango.slice(start_num - 1, end_num);
@@ -148,6 +149,21 @@ let startGameReceived = false;
 let currentQuestionHadMistake = false;
 let finish = false;
 let finishTimeOut;
+let lastRenderTime = 0;
+const TARGET_FRAME_MS = 1000 / 30;
+let cornerCorrectElem = null;
+let cornerTotalElem = null;
+let btbCountElem = null;
+let btbTotalElem = null;
+let gameTimerElem = null;
+
+function cacheHudElements() {
+    cornerCorrectElem = document.querySelector('.corner-correct');
+    cornerTotalElem = document.querySelector('.corner-total');
+    btbCountElem = document.querySelector('.btb-count');
+    btbTotalElem = document.querySelector('.btb-total');
+    gameTimerElem = document.querySelector('.game-timer');
+}
 
 function resetGameState() {
     q_num = 0;
@@ -173,6 +189,7 @@ function resetGameState() {
     ranking = [];
     intervalIds = [];
     animationFrameIds = [];
+    lastRenderTime = 0;
 }
 
 // ===== 割り込み追加 =====
@@ -225,7 +242,13 @@ function breakBlock() {
 }
 
 // ===== 更新 =====
-function update() {
+function update(timestamp = 0) {
+    if (timestamp - lastRenderTime < TARGET_FRAME_MS) {
+        const animationFrameId = requestAnimationFrame(update);
+        animationFrameIds.push(animationFrameId);
+        return;
+    }
+    lastRenderTime = timestamp;
     ctx.clearRect(-100, 0, 200, 1000);
 
     // 落下処理（破壊時のみ効く）
@@ -278,20 +301,15 @@ function update() {
     }
 
     // 右下の正解数/総問題数も毎フレーム更新
-    const correctElem = document.querySelector('.corner-correct');
-    const totalElem = document.querySelector('.corner-total');
-    if (correctElem) correctElem.textContent = number_of_questions - blocks.length;
-    if (totalElem) totalElem.textContent = number_of_questions;
-    const btbElem = document.querySelector('.btb-count');
-    if (btbElem) btbElem.textContent = btb_count;
-    const btbTotalElem = document.querySelector('.btb-total');
+    if (cornerCorrectElem) cornerCorrectElem.textContent = number_of_questions - blocks.length;
+    if (cornerTotalElem) cornerTotalElem.textContent = number_of_questions;
+    if (btbCountElem) btbCountElem.textContent = btb_count;
     if (btbTotalElem) btbTotalElem.textContent = btb_total;
 
     // ゲームプレイ時間の更新
     elapsed_time = (Date.now() - game_start_time) / 1000;
-    const timerElem = document.querySelector('.game-timer');
-    if (timerElem) {
-        timerElem.textContent = elapsed_time.toFixed(2);
+    if (gameTimerElem) {
+        gameTimerElem.textContent = elapsed_time.toFixed(2);
     }
 
     b_ctx.clearRect(0, 0, 1000, 50);
