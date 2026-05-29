@@ -168,13 +168,14 @@ function initializeBlocks(totalBlocks) {
 
 
 function speakQuestionWord(word) {
-    if (!word || !getSpeechEnabled() || typeof window === "undefined" || !window.speechSynthesis) return;
+    const volume = getVolumeLevel();
+    if (!word || !getSpeechEnabled() || volume <= 0 || typeof window === "undefined" || !window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(word);
     utterance.lang = "en-US";
     utterance.rate = 0.9;
     utterance.pitch = 1;
-    utterance.volume = getVolumeLevel() * 2; 
+    utterance.volume = volume; 
     window.speechSynthesis.speak(utterance);
 }
 
@@ -289,9 +290,12 @@ function addBlock(indexFromBottom, color="#f44336") {
 function breakBlock() {
 
     // break.mp3を再生
-    const audio = new Audio(`${process.env.PUBLIC_URL}/break.mp3`);
-    audio.volume = getVolumeLevel();
-    audio.play();
+    const volume = getVolumeLevel();
+    if (volume > 0) {
+        const audio = new Audio(`${process.env.PUBLIC_URL}/break.mp3`);
+        audio.volume = volume;
+        audio.play();
+    }
 
     if (blocks.length === 0) return;
 
@@ -378,9 +382,12 @@ function update() {
     b_ctx.clearRect(0, 0, 1000, 50);
     if (Date.now() - start_time > max_time) {
         if (!beeped) {
-            const audio = new Audio(`${process.env.PUBLIC_URL}/beep.mp3`);
-            audio.volume = getVolumeLevel();
-            audio.play();
+            const volume = getVolumeLevel();
+            if (volume > 0) {
+                const audio = new Audio(`${process.env.PUBLIC_URL}/beep.mp3`);
+                audio.volume = volume;
+                audio.play();
+            }
             // 失敗時、カウント中のbtb_countを累計に加算
             btb_total += btb_count;
             beeped = true;
@@ -627,9 +634,12 @@ function Game() {
                         question_list.splice(randomNum, 0, question_list[q_num]);
                     }
                     number_of_questions += 2;
-                    const audio = new Audio(`${process.env.PUBLIC_URL}/wrong.mp3`);
-                    audio.volume = getVolumeLevel();
-                    audio.play();
+                    const volume = getVolumeLevel();
+                    if (volume > 0) {
+                        const audio = new Audio(`${process.env.PUBLIC_URL}/wrong.mp3`);
+                        audio.volume = volume;
+                        audio.play();
+                    }
                 }
             });
         });

@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import './Mode.css';
-import { datalist } from "framer-motion/client";
+// import { datalist } from "framer-motion/client";
 
 const slideVariants = {
     initial: { x: "100%", opacity: 0 },
