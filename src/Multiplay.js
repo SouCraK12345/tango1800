@@ -6,6 +6,7 @@ import { WebHaptics, defaultPatterns } from "https://cdn.skypack.dev/web-haptics
 import { useEffect, useState } from "react";
 import { incrementCorrectCount, incrementWrongCount } from "./wrongCountStorage";
 import { getHapticsEnabled, getSpeechEnabled, getVolumeLevel } from "./settingsStorage";
+import { playSound } from "./audioPlayer";
 import { feFuncA } from "framer-motion/client";
 
 const slideVariants = {
@@ -217,9 +218,7 @@ function breakBlock() {
     // break.mp3を再生
     const volume = getVolumeLevel();
     if (volume > 0) {
-        const audio = new Audio(`${process.env.PUBLIC_URL}/break.mp3`);
-        audio.volume = volume;
-        audio.play();
+        playSound("break.mp3", volume).catch(() => {});
     }
 
     if (blocks.length === 0) return;
@@ -323,9 +322,7 @@ function update(timestamp = 0) {
             sendMessage({ type: "btb", count: btb_count, user_name: localStorage.getItem("user_name"), enemy });
             const volume = getVolumeLevel();
             if (volume > 0) {
-                const audio = new Audio(`${process.env.PUBLIC_URL}/beep.mp3`);
-                audio.volume = volume;
-                audio.play().catch(e => { /* 失敗しても無視 */ });
+                playSound("beep.mp3", volume).catch(() => {});
             }
             // 失敗時、カウント中のbtb_countを累計に加算
             btb_total += btb_count;
@@ -375,9 +372,7 @@ function onMessage(event) {
             setTimeout(() => {
                 const volume = getVolumeLevel();
                 if (volume > 0) {
-                    const audio = new Audio(`${process.env.PUBLIC_URL}/damage.mp3`);
-                    audio.volume = volume;
-                    audio.play().catch(e => { /* 失敗しても無視 */ });
+                    playSound("damage.mp3", volume).catch(() => {});
                 }
             }, 1200);
             for (var i = 0; i < data.count; i++) {
@@ -574,9 +569,7 @@ function MultiPlay() {
                     }
                     const volume = getVolumeLevel();
                     if (volume > 0) {
-                        const audio = new Audio(`${process.env.PUBLIC_URL}/wrong.mp3`);
-                        audio.volume = volume;
-                        audio.play();
+                        playSound("wrong.mp3", volume).catch(() => {});
                     }
                     number_of_questions += 2;
                 }
