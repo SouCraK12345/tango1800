@@ -8,13 +8,3 @@
   width: 100vw;
   height: 100vh;
 }
-
-.settingsButton {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  color: inherit;
-  text-decoration: none;
-  font-size: 32px;
-  z-index: 2;
-}

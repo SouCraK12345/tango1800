@@ -9,6 +9,7 @@ import Result from "./Result";
 import Multiplay from "./Multiplay";
 import MistakeStats from "./MistakeStats";
 import Settings from "./Settings";
+import { AuthProvider } from "./auth/AuthContext";
 import './App.css';
 
 function AnimatedRoutes() {
@@ -50,9 +51,11 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-    <BrowserRouter basename="/">
-      <AnimatedRoutes />
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter basename="/">
+        <AnimatedRoutes />
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

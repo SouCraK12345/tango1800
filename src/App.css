@@ -4,7 +4,7 @@
 body{
   background-color: #fff2c7;
   font-family: "Noto Sans JP", sans-serif;
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 #root {

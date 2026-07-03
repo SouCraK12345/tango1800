@@ -9,6 +9,7 @@ import {
   setSpeechEnabled,
   setVolumeLevel,
 } from "./settingsStorage";
+import { useAuth } from "./auth/AuthContext";
 import "./Settings.css";
 
 const slideVariants = {
@@ -18,6 +19,7 @@ const slideVariants = {
 };
 
 function Settings() {
+  const { user, loading, googleLogin, loginInProgress } = useAuth();
   const [volume, setVolume] = useState(getVolumeLevel());
   const [hapticsEnabled, setHapticsEnabledState] = useState(getHapticsEnabled());
   const [speechEnabled, setSpeechEnabledState] = useState(getSpeechEnabled());
@@ -86,6 +88,38 @@ function Settings() {
       className="Settings"
     >
       <h1>設定</h1>
+      <section className="accountSection">
+        <h2>アカウント</h2>
+        {loading ? (
+          <p className="accountStatus">読み込み中...</p>
+        ) : user ? (
+          <dl className="accountData">
+            <div className="accountDataRow">
+              <dt>表示名</dt>
+              <dd>{user.displayName || "未設定"}</dd>
+            </div>
+            <div className="accountDataRow">
+              <dt>メールアドレス</dt>
+              <dd>{user.email || "未設定"}</dd>
+            </div>
+            <div className="accountDataRow">
+              <dt>ユーザーID</dt>
+              <dd className="accountUid">{user.uid}</dd>
+            </div>
+            <div className="accountDataRow">
+              <dt>ログイン方法</dt>
+              <dd>{user.providerData[0]?.providerId === "google.com" ? "Google" : user.providerData[0]?.providerId || "不明"}</dd>
+            </div>
+          </dl>
+        ) : (
+          <div className="accountNotLoggedIn">
+            <p className="accountStatus">ログインしていません</p>
+            <button type="button" onClick={googleLogin} disabled={loginInProgress}>
+              {loginInProgress ? "ログイン中..." : "Googleでログイン"}
+            </button>
+          </div>
+        )}
+      </section>
       <label className="volumeLabel" htmlFor="volume-range">
         音量: {Math.round(volume * 100)}%
       </label>
