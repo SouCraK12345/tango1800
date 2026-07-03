@@ -6,6 +6,7 @@ import { WebHaptics, defaultPatterns } from "https://cdn.skypack.dev/web-haptics
 import { useState, useEffect } from "react";
 import { getCorrectCounts, getWrongCounts, incrementCorrectCount, incrementWrongCount } from "./wrongCountStorage";
 import { getHapticsEnabled, getSpeechEnabled, getVolumeLevel } from "./settingsStorage";
+import { playSound } from "./audioPlayer";
 
 const slideVariants = {
     initial: { x: "100%", opacity: 0 },
@@ -309,9 +310,7 @@ function breakBlock() {
     // break.mp3を再生
     const volume = getVolumeLevel();
     if (volume > 0) {
-        const audio = new Audio(`${process.env.PUBLIC_URL}/break.mp3`);
-        audio.volume = volume;
-        audio.play();
+        playSound("break.mp3", volume).catch(() => {});
     }
 
     if (blocks.length === 0) return;
@@ -413,9 +412,7 @@ function update(timestamp = 0) {
         if (!beeped) {
             const volume = getVolumeLevel();
             if (volume > 0) {
-                const audio = new Audio(`${process.env.PUBLIC_URL}/beep.mp3`);
-                audio.volume = volume;
-                audio.play();
+                playSound("beep.mp3", volume).catch(() => {});
             }
             // 失敗時、カウント中のbtb_countを累計に加算
             btb_total += btb_count;
@@ -665,9 +662,7 @@ function Game() {
                     number_of_questions += 2;
                     const volume = getVolumeLevel();
                     if (volume > 0) {
-                        const audio = new Audio(`${process.env.PUBLIC_URL}/wrong.mp3`);
-                        audio.volume = volume;
-                        audio.play();
+                        playSound("wrong.mp3", volume).catch(() => {});
                     }
                 }
             });
