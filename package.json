@@ -13,7 +13,6 @@
     "react-dom": "^19.2.4",
     "react-router-dom": "^7.13.2",
     "react-scripts": "5.0.1",
-    "tailwind": "^4.0.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -28,17 +27,10 @@
       "react-app/jest"
     ]
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all",
-      "supports dynamic-import"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "browserslist": [
+    "chrome >= 63",
+    "firefox >= 67",
+    "safari >= 12",
+    "edge >= 79"
+  ]
 }
